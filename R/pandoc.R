@@ -13,8 +13,7 @@ rtf_to_html <- function(file) {
     stop("Input RTF file does not exist: ", file)
   }
 
-  pandoc_path <- Sys.which("pandoc")
-  if (pandoc_path == "") {
+  if (Sys.which("pandoc") == "") {
     stop(
       "Pandoc command not found. ",
       "Please ensure Pandoc is installed and in your system's PATH."
