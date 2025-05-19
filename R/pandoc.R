@@ -14,8 +14,8 @@
 #'
 #' @export
 rtf_to_html <- function(file) {
-  if (!file.exists(input_rtf_file)) {
-    stop("Input RTF file does not exist: ", input_rtf_file)
+  if (!file.exists(file)) {
+    stop("Input RTF file does not exist: ", file)
   }
 
   pandoc_path <- Sys.which("pandoc")
