@@ -3,3 +3,4 @@
 #   numbers, and dates, need to be included somewhere in the ARD?
 # - See cards: https://github.com/insightsengineering/cards
 # - See cardsx: https://github.com/insightsengineering/cardx
+# - ARD definition: https://wiki.cdisc.org/pages/viewpage.action?pageId=222298985
