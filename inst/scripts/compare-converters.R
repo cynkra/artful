@@ -104,6 +104,7 @@ html_knitr_complex |>
   print(n = Inf)
 
 # Summary
-# - artful solution is the only one which maintained indentation formatting when
-#   viewing the rendered HTML
-# - artful & knitr scrape the html table into the same format.
+# - unrtf doesn't easily conver to data frame, this can probably be mitigated
+#   by writing a custom `html_table()` implementation
+# - No format maintains indentation, although if the `--standalone` flag is
+#   passed to the artful call, then indentation remains upon browser rendering.
