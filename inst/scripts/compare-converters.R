@@ -104,7 +104,39 @@ html_knitr_complex |>
   print(n = Inf)
 
 # Summary
-# - unrtf doesn't easily conver to data frame, this can probably be mitigated
-#   by writing a custom `html_table()` implementation
+# - unrtf doesn't easily convert to data frame, this can probably be mitigated
+#   by writing a custom `html_table()` implementation. But given that the
+#   artful solution returns an (R) dependency free implementation that returns
+#   the simplest HTML structure. It is preferred.
 # - No format maintains indentation, although if the `--standalone` flag is
 #   passed to the artful call, then indentation remains upon browser rendering.
+#   A customer parser could then potentially detect this indentation when
+#   creating a dataframe. From what I can tell, CSS classes are used to perform
+#   the indentation:
+#
+# waldo::compare(
+#   system2(
+#     "pandoc",
+#     args = c("--from", "rtf", "--to", "html", shQuote(file_rtf_complex)),
+#     stdout = TRUE,
+#     stderr = TRUE
+#   ),
+#   system2(
+#     "pandoc",
+#     args = c(
+#       "--from",
+#       "rtf",
+#       "--to",
+#       "html",
+#       "--standalone",
+#       shQuote(file_rtf_complex)
+#     ),
+#     stdout = TRUE,
+#     stderr = TRUE
+#   ),
+#   max_diffs = Inf
+# )
+
+# - Indentation can easily been seen in the converted dataframes, by missing
+#   values across non-indented rows. This may be a safer heuristic to use to
+#   determine where indentation occurs.
