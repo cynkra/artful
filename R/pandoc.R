@@ -40,5 +40,5 @@ rtf_to_html <- function(file) {
     rlang::abort(c("Running Pandoc failed with following error", result))
   }
 
-  return(paste(result, collapse = "\n"))
+  return(result)
 }
