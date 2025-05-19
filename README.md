@@ -1,2 +1,2 @@
 # artful
-Experimental R package to convert RTF tables into data frames
+a**rtf**ul is an experimental R package to convert RTF tables into data frames.
