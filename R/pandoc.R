@@ -28,11 +28,17 @@ rtf_to_html <- function(file) {
 
   message("Attempting conversion...")
 
-  output <- system2(
+  result <- system2(
     "pandoc",
     args = c("--from", "rtf", "-too", "html5", "--standalone", shQuote(file)),
     stdout = TRUE,
-    stderr = FALSE
+    stderr = TRUE
   )
-  return(paste(html_output_lines, collapse = "\n"))
+
+  status <- attr(result, "status", TRUE)
+  if (length(status) > 0 && status > 0) {
+    rlang::abort(c("Running Pandoc failed with following error", result))
+  }
+
+  return(paste(result, collapse = "\n"))
 }
