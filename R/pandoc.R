@@ -1,8 +1,3 @@
-# ------------------------------------------------------------------------------
-# Note: we could also use `knitr::pandoc()`, `rmarkdown::pandoc_convert()`,
-# `pandoc::pandoc_run()` or `unrtf::unrtf()` to convert RTF to HTML.
-# ------------------------------------------------------------------------------
-
 #' Convert an RTF file to HTML using Pandoc
 #'
 #' This function takes the path to an input RTF file and uses the Pandoc
