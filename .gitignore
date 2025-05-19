@@ -48,3 +48,6 @@ po/*~
 # RStudio Connect folder
 rsconnect/
 .Rproj.user
+
+# Table examples provided by BMS
+inst/extdata/complex.rtf
