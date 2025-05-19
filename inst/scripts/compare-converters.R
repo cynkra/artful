@@ -35,4 +35,4 @@ browseURL(file_knitr)
 
 # Summary
 # - Return html tables of differing levels of complexity
-# -
+# - knitr returns the simplest html structure, followed by artful, then unrtf
