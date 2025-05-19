@@ -30,7 +30,7 @@ rtf_to_html <- function(file) {
 
   result <- system2(
     "pandoc",
-    args = c("--from", "rtf", "--too", "html5", "--standalone", shQuote(file)),
+    args = c("--from", "rtf", "--to", "html5", "--standalone", shQuote(file)),
     stdout = TRUE,
     stderr = TRUE
   )
