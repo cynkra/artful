@@ -5,6 +5,7 @@
 # ---- Simple RTF table ----
 library(gt)
 library(unrtf)
+library(rvest)
 pkgload::load_all()
 
 file_rtf <- tempfile(fileext = ".rtf")
@@ -33,9 +34,27 @@ browseURL(file_artful)
 browseURL(file_unrtf)
 browseURL(file_knitr)
 
+html_artful |>
+  paste0(collapse = "\n") |>
+  minimal_html() |>
+  html_element("table") |>
+  html_table()
+
+html_unrtf |>
+  minimal_html() |>
+  html_element("table") |>
+  html_table()
+
+html_knitr |>
+  paste0(collapse = "\n") |>
+  minimal_html() |>
+  html_element("table") |>
+  html_table()
+
 # Summary
 # - Return html tables of differing levels of complexity
 # - knitr returns the simplest html structure, followed by artful, then unrtf
+# - All three methods scrape the html table into the same format.
 
 # ---- Complex RTF table ----
 # Test on an actual complex clinical table. Download and manually add
@@ -63,5 +82,27 @@ browseURL(file_artful_complex)
 browseURL(file_unrtf_complex)
 browseURL(file_knitr_complex)
 
+html_artful_complex |>
+  paste0(collapse = "\n") |>
+  minimal_html() |>
+  html_element("table") |>
+  html_table() |>
+  print(n = Inf)
+
+html_unrtf_complex |>
+  minimal_html() |>
+  html_element("table") |>
+  html_table() |>
+  print(n = Inf)
+
+html_knitr_complex |>
+  paste0(collapse = "\n") |>
+  minimal_html() |>
+  html_element("table") |>
+  html_table() |>
+  print(n = Inf)
+
 # Summary
-# - artful solution is the only one which maintained indentation formatting
+# - artful solution is the only one which maintained indentation formatting when
+#   viewing the rendered HTML
+# - artful & knitr scrape the html table into the same format.
