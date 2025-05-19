@@ -52,9 +52,10 @@ html_knitr |>
   html_table()
 
 # Summary
-# - Return html tables of differing levels of complexity
-# - knitr returns the simplest html structure, followed by artful, then unrtf
-# - All three methods scrape the html table into the same format.
+# - knitr and artful return the same HTML (as to be expected, as they both use
+#   pandoc under the hood)
+# - pandoc solutions return less complex HTML structures devoid of size/fonts,
+#   etc. that are bundled with unrtf solution.
 
 # ---- Complex RTF table ----
 # Test on an actual complex clinical table. Download and manually add
