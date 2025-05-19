@@ -2,7 +2,7 @@
 # Aim: compare solutions to convert RTF tables to data frames
 # ------------------------------------------------------------------------------
 
-# Simple RTF table -------------------------------------------------------------
+# ---- Simple RTF table ----
 library(gt)
 library(unrtf)
 pkgload::load_all()
@@ -36,3 +36,31 @@ browseURL(file_knitr)
 # Summary
 # - Return html tables of differing levels of complexity
 # - knitr returns the simplest html structure, followed by artful, then unrtf
+
+# ---- Complex RTF table ----
+# Test on an actual complex clinical table
+file_rtf_complex <- tempfile(fileext = ".rtf")
+path_complex <- system.file("extdata", "complex.rtf", package = "artful")
+file.copy(path_complex, file_rtf_complex)
+
+file_artful_complex <- tempfile(fileext = ".html")
+file_unrtf_complex <- tempfile(fileext = ".html")
+file_knitr_complex <- knitr::pandoc(file_rtf_complex, "html")
+
+html_artful_complex <- rtf_to_html(file_rtf_complex)
+html_unrtf_complex <- unrtf::unrtf(file_rtf_complex, "html")
+html_knitr_complex <- readLines(file_knitr_complex)
+
+writeLines(html_artful_complex, file_artful_complex)
+writeLines(html_unrtf_complex, file_unrtf_complex)
+
+waldo::compare(html_artful_complex, html_unrtf_complex)
+waldo::compare(html_artful_complex, html_knitr_complex)
+waldo::compare(html_unrtf_complex, html_knitr_complex)
+
+browseURL(file_artful_complex)
+browseURL(file_unrtf_complex)
+browseURL(file_knitr_complex)
+
+# Summary
+# - artful solution is the only one which maintained indentation formatting
