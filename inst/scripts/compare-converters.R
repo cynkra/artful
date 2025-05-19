@@ -38,9 +38,10 @@ browseURL(file_knitr)
 # - knitr returns the simplest html structure, followed by artful, then unrtf
 
 # ---- Complex RTF table ----
-# Test on an actual complex clinical table
+# Test on an actual complex clinical table. Download and manually add
+# "inst/extdata/rt-dm-rsd_anon.rtf"
 file_rtf_complex <- tempfile(fileext = ".rtf")
-path_complex <- system.file("extdata", "complex.rtf", package = "artful")
+path_complex <- system.file("extdata", "rt-dm-rsd_anon.rtf", package = "artful")
 file.copy(path_complex, file_rtf_complex)
 
 file_artful_complex <- tempfile(fileext = ".html")
