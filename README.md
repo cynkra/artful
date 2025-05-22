@@ -9,6 +9,9 @@ Next, a set of heuristics is used to convert the R data frame to follow the ARD 
 1. Titles, subtitles, and footnotes should be stripped (and optionally stored as additional attributes or separate metadata).
 2. Paginated tables should be combined into a single table, with repeat headers stripped.
 3. Indented columns should be separated out into unique columns.
+4. Merged columns (e.g., where a count and percentage are combined into a single string) should be separated out into unique columns.
+5. Empty rows (where all cells are empty strings) should be removed.
+6. Spanning columns headers should be separated out into grouping columns (i.e., a spanning column header represents a unique grouping identifier for the columns it spans over).
 
 ## Coverage
 As the RTF tables this package attempts to convert are designed to be human readable, and not machine readable, this package will never be able to guarantee 100% coverage across all tables.
