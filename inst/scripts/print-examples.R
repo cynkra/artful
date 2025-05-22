@@ -3,14 +3,9 @@ library(rvest)
 pkgload::load_all()
 
 load_and_view <- function(file) {
-  rtf_file <- system.file("extdata", file, package = "artful")
-
-  html <- rtf_to_html(rtf_file)
-
-  html |>
-    minimal_html() |>
-    html_element("table") |>
-    html_table() |>
+  system.file("extdata", file, package = "artful") |>
+    rtf_to_html() |>
+    html_to_dataframe() |>
     View()
 }
 
