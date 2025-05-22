@@ -9,7 +9,7 @@
 #'
 #' @keywords internal
 strip_empty_rows <- function(data) {
-  dplyr::filter(data, !dplyr::if_all(everything(), ~ . == ""))
+  filter(data, !if_all(everything(), ~ . == ""))
 }
 
 #' Remove the header
