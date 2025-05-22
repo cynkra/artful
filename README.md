@@ -35,3 +35,26 @@ This means the data frame should include at least the follow columns (with recom
 - statistical names (`stat_name`)
 - statistical label (`stat_label`)
 - statistical value (`stat`)
+
+3. To create standardisation with other packages such as [cards](https://insightsengineering.github.io/cards/), the following `stat_name` and `stat_label` values should be used:
+
+| `stat_name` | Typical `stat_label` | Description                                                          |
+|-------------|----------------------|----------------------------------------------------------------------|
+| `n`         | "n" or "Count"       | Count of subjects/records in a specific category or group.           |
+| `N`         | "N" or "Total N"     | Total number of subjects/records in a group, often a denominator.    |
+| `N_obs`     | "N Observed"         | Number of non-missing observations.                                  |
+| `N_miss`    | "N Missing"          | Number of missing observations.                                      |
+| `p`         | "%" or "Percent"     | Proportion (often presented as percentage after multiplying by 100). |
+| `pct`       | "%" or "Percent"     | Percentage.                                                          |
+| `mean`      | "Mean"               | Arithmetic mean.                                                     |
+| `sd`        | "SD" or "Std Dev"    | Standard Deviation.                                                  |
+| `se`        | "SE" or "Std Err"    | Standard Error of the Mean.                                          |
+| `median`    | "Median"             | Median (50th percentile).                                            |
+| `p25`       | "Q1" or "25th Pctl"  | 25th Percentile (First Quartile).                                    |
+| `p75`       | "Q3" or "75th Pctl"  | 75th Percentile (Third Quartile).                                    |
+| `iqr`       | "IQR"                | Interquartile Range (p75 - p25).                                     |
+| `min`       | "Min" or "Minimum"   | Minimum value.                                                       |
+| `max`       | "Max" or "Maximum"   | Maximum value.                                                       |
+| `range`     | "Range"              | Range (often displayed as "min - max").                              |
+| `geom_mean` | "Geometric Mean"     | Geometric mean.                                                      |
+| `cv`        | "CV (%)"             | Coefficient of Variation.                                            |
