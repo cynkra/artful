@@ -1,6 +1,13 @@
-# Notes:
-# - Do not table-cell elements, e.g., headers, footers, protocol numbers, page
-#   numbers, and dates, need to be included somewhere in the ARD?
-# - See cards: https://github.com/insightsengineering/cards
-# - See cardsx: https://github.com/insightsengineering/cardx
-# - ARD definition: https://wiki.cdisc.org/pages/viewpage.action?pageId=222298985
+#' Convert an RTF Table into an ARD data frame
+#'
+#' This function converts a table in RTF format into a data frame in R,
+#' following the ARD standard.
+#'
+#' @param file A string, the path to the input .rtf file.
+#'
+#' @return an R data frame following the ARD standard.
+#'
+#' @export
+rtf_to_ard <- function(file) {
+  # Placeholder function
+}
