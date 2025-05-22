@@ -1,5 +1,4 @@
 library(purrr)
-library(rvest)
 pkgload::load_all()
 
 load_and_view <- function(file) {
