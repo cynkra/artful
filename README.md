@@ -18,7 +18,7 @@ As the RTF tables this package attempts to convert are designed to be human read
 Instead the heuristics described above should continually be updated inline with any changes to the code made to accomodate new RTF tables which did not fit the previous rule set.
 
 ## ARD standard
-ARD is a standardized, machine-readable format specifically designed for encoding statistical analysis summaries derived from clinical trial data. 
+ARD is a standardised, machine-readable format specifically designed for encoding statistical analysis summaries derived from clinical trial data. 
 However, the ARD standard is still not concretely defined.
 This means it is open to interpretation and has some scope of flexibility in terms of columns to be included.
 Approximately defined, an ARD data frame should abide to the following criteria:
@@ -38,7 +38,7 @@ This means the data frame should include at least the follow columns (with recom
 
 3. To create standardisation with other packages such as [cards](https://insightsengineering.github.io/cards/), the following `stat_name` and `stat_label` values should be used:
 
-| `stat_name` | Typical `stat_label` | Description                                                          |
+| `stat_name` | `stat_label`         | Description                                                          |
 |-------------|----------------------|----------------------------------------------------------------------|
 | `n`         | "n" or "Count"       | Count of subjects/records in a specific category or group.           |
 | `N`         | "N" or "Total N"     | Total number of subjects/records in a group, often a denominator.    |
