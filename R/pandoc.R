@@ -7,7 +7,7 @@
 #'
 #' @return Character vector of HTML.
 #'
-#' @export
+#' @keywords internal
 rtf_to_html <- function(file) {
   if (!file.exists(file)) {
     stop("Input RTF file does not exist: ", file)

@@ -16,3 +16,4 @@ Character vector of HTML.
 This function takes the path to an input RTF file and uses the Pandoc
 command-line tool to convert it to HTML.
 }
+\keyword{internal}
