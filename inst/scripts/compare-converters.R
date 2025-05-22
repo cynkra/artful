@@ -84,7 +84,6 @@ browseURL(file_unrtf_complex)
 browseURL(file_knitr_complex)
 
 html_artful_complex |>
-  paste0(collapse = "\n") |>
   minimal_html() |>
   html_element("table") |>
   html_table() |>
