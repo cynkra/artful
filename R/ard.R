@@ -9,5 +9,5 @@
 #'
 #' @export
 rtf_to_ard <- function(file) {
-  # Placeholder function
+  # Placeholder
 }
