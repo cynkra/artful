@@ -50,4 +50,4 @@ rsconnect/
 .Rproj.user
 
 # Table examples provided by BMS
-inst/extdata/rt-dm-rsd_anon.rtf
+inst/extdata/bms-*.rtf
