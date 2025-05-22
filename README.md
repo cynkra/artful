@@ -6,8 +6,9 @@ artful works by first converting RTF tables into HTML tables via [Pandoc](https:
 Then, [rvest](https://rvest.tidyverse.org/) is used to extract the HTML table into an R data frame.
 Next, a set of heuristics is used to convert the R data frame to follow the ARD standard. Below is a record of these heuristics, which informs the parsing rules followed in `R/parse.R`:
 
-1. Heuristic placeholder 1
-2. Heuristic placeholder 2
+1. Titles, subtitles, and footnotes should be stripped (and optionally stored as additional attributes or separate metadata).
+2. Paginated tables should be combined into a single table, with repeat headers stripped.
+3. Indented columns should be separated out into unique columns.
 
 ## Coverage
 As the RTF tables this package attempts to convert are designed to be human readable, and not machine readable, this package will never be able to guarantee 100% coverage across all tables.
