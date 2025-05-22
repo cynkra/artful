@@ -31,7 +31,7 @@ rtf_to_html <- function(file) {
 
   status <- attr(result, "status", TRUE)
   if (length(status) > 0 && status > 0) {
-    rlang::abort(c("Running Pandoc failed with following error", result))
+    stop(c("Running Pandoc failed with following error", result))
   }
 
   return(paste0(result, collapse = "\n"))
