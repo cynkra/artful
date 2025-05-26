@@ -23,7 +23,13 @@ strip_empty_rows <- function(data) {
 #'
 #' @keywords internal
 strip_header <- function(data) {
-  # Placeholder
+  # The second+ columns are populated with empty strings "" alongside the
+  # header information which can be used to determine the row indices of the
+  # header
+  last_header_row <- min(which(data[[2]] != "")) - 1
+
+  data |>
+    slice(-1:-last_header_row)
 }
 
 #' Remove the footer
