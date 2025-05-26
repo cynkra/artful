@@ -76,7 +76,7 @@ strip_footer <- function(data) {
 #' @return A data frame with the repeat column names removed.
 #'
 #' @keywords internal
-strip_colnames <- function(data) {
+strip_repeat_colnames <- function(data) {
   # This assumes column names are in the first row (which is the case if this
   # function is called after calling `strip_header()`)
   first_row <- dplyr::slice(data, 1L)
@@ -91,7 +91,7 @@ strip_colnames <- function(data) {
 #' Strip pagination from a table
 #'
 #' This function combines the functionality of [strip_empty_rows()],
-#' [strip_header()], [strip_footer()] and [strip_repear_colnames()] into a
+#' [strip_header()], [strip_footer()] and [strip_repeat_colnames()] into a
 #' single function. If fine grained control is not required to remove certain
 #' elements of a table, this function is preferred because the actions of
 #' stripping table elements are dependent on each other (e.g., to remove

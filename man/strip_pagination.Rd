@@ -14,7 +14,7 @@ A data frame where pagination has been stripped.
 }
 \description{
 This function combines the functionality of \code{\link[=strip_empty_rows]{strip_empty_rows()}},
-\code{\link[=strip_header]{strip_header()}}, \code{\link[=strip_footer]{strip_footer()}} and \code{\link[=strip_repear_colnames]{strip_repear_colnames()}} into a
+\code{\link[=strip_header]{strip_header()}}, \code{\link[=strip_footer]{strip_footer()}} and \code{\link[=strip_repeat_colnames]{strip_repeat_colnames()}} into a
 single function. If fine grained control is not required to remove certain
 elements of a table, this function is preferred because the actions of
 stripping table elements are dependent on each other (e.g., to remove
