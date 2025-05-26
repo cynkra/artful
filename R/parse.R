@@ -73,7 +73,15 @@ strip_footer <- function(data) {
 #'
 #' @keywords internal
 strip_colnames <- function(data) {
-  # Placeholder
+  # This assumes column names are in the first row (which is the case if this
+  # function is called after calling `strip_header()`)
+  first_row <- dplyr::slice(data, 1L)
+  remaining_rows <- dplyr::slice(data, -1L)
+
+  remaining_rows_without_colnames <- remaining_rows |>
+    dplyr::anti_join(first_row)
+
+  dplyr::bind_rows(first_row, remaining_rows_without_colnames)
 }
 
 #' Separate a single indented column into multiple columns
