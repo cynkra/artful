@@ -6,8 +6,8 @@ artful works by first converting RTF tables into HTML tables via [Pandoc](https:
 Then, [rvest](https://rvest.tidyverse.org/) is used to extract the HTML table into an R data frame.
 Next, a set of heuristics is used to convert the R data frame to follow the ARD standard. Below is a record of these heuristics, which informs the parsing rules followed in `R/parse.R`:
 
-1. Titles, subtitles, and footnotes should be stripped (and optionally stored as additional attributes or separate metadata).
-2. Paginated tables should be combined into a single table, with repeat headers stripped.
+1. Titles, subtitles, and footnotes should be stripped (and optionally stored as additional attributes or separate metadata). This includes repeated occurances caused by pagination.
+2. Repeated column names, caused by pagination, should be stripped.
 3. Indented columns should be separated out into unique columns.
 4. Merged columns (e.g., where a count and percentage are combined into a single string) should be separated out into unique columns.
 5. Empty rows (where all cells are empty strings) should be removed.
