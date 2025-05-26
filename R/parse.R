@@ -120,7 +120,6 @@ strip_pagination <- function(data) {
   bind_rows(colnames, non_paginated_rows)
 }
 
-
 #' Separate a single indented column into multiple columns
 #'
 #' This function separates a single indented column into multiple columns inside
