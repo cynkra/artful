@@ -48,7 +48,17 @@ strip_header <- function(data) {
 #'
 #' @keywords internal
 strip_footer <- function(data) {
-  # Placeholder
+  # The last row in the third column that is not an empty string signals the
+  # last row before the footer. All following rows until the end of the data
+  # frame are populated with empty strings alonside the footer values in
+  # the first column.
+  footer_first_row <- max(which(data[[3]] != "" | is.na(data[[3]]))) + 1
+
+  # Some tables repeat across pages in the original RTF. This results in
+  # data frames containing combined data frames with footers that repeat across
+  # several points. Capture the original footer:
+  footer_values <- data[[1]][footer_first_row:nrow(data)]
+  data[data[[1]] %!in% footer_values, ]
 }
 
 #' Remove pagination
