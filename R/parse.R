@@ -153,6 +153,15 @@ strip_pagination <- function(data) {
   non_paginated <- bind_rows(colnames, table_cells)
 
   colnames <- slice(non_paginated, 1L) |> as.character()
+  colnames_missing_indices <- which(colnames == "")
+
+  for (i in colnames_missing_indices) {
+    replacement <- filter(data, if_all(!i, ~ .x == "")) |>
+      slice(1L) |>
+      pull(i)
+    colnames[i] <- replacement
+  }
+
   non_paginated |>
     rename_with(~colnames) |>
     slice(-1L)
