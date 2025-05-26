@@ -25,11 +25,16 @@ strip_empty_rows <- function(data) {
 strip_header <- function(data) {
   # The second+ columns are populated with empty strings "" alongside the
   # header information which can be used to determine the row indices of the
-  # header
-  last_header_row <- min(which(data[[2]] != "")) - 1
+  # header:
+  header_last_row <- min(which(data[[2]] != "")) - 1
 
-  data |>
-    slice(-1:-last_header_row)
+  # Some tables repeat across pages in the original RTF. This results in
+  # data frames containing combined data frames with headers that repeat across
+  # several points. Capture the original header:
+  header_values <- data[[1]][1:header_last_row]
+
+  # Remove all copies of the header:
+  data[data[[1]] %!in% header_values, ]
 }
 
 #' Remove the footer
