@@ -31,10 +31,11 @@ strip_header <- function(data) {
   # Some tables repeat across pages in the original RTF. This results in
   # data frames containing combined data frames with headers that repeat across
   # several points. Capture the original header:
-  header_values <- data[[1]][1:header_last_row]
+  header <- slice(data, 1:header_last_row)
 
   # Remove all copies of the header:
-  data[data[[1]] %!in% header_values, ]
+  data |>
+    anti_join(header)
 }
 
 #' Remove the footer
@@ -57,8 +58,11 @@ strip_footer <- function(data) {
   # Some tables repeat across pages in the original RTF. This results in
   # data frames containing combined data frames with footers that repeat across
   # several points. Capture the original footer:
-  footer_values <- data[[1]][footer_first_row:nrow(data)]
-  data[data[[1]] %!in% footer_values, ]
+  footer <- slice(data, footer_first_row:nrow(data))
+
+  # Remove all copies of the footer:
+  data |>
+    anti_join(footer)
 }
 
 #' Remove repeat column names
