@@ -102,16 +102,22 @@ set_colnames <- function(data) {
   # This assumes column names are in the first row (which is the case if this
   # function is called after calling `strip_header()`)
   colnames <- slice(data, 1L) |> as.character()
+
+  # For any missing column names, it is assumed that the missing column can be
+  # found on the first row of the corresponding column where all other columns
+  # are empty strings.
+  colnames_missing_indices <- which(colnames == "")
+
+  for (i in colnames_missing_indices) {
+    replacement <- filter(data, if_all(!i, ~ .x == "")) |>
+      slice(1L) |>
+      pull(i)
+    colnames[i] <- replacement
+  }
+
   data |>
     rename_with(~colnames) |>
     slice(-1L)
-
-  # FIXME: example bms-2.rtf does not seem solveable from a general perspective.
-  # It throw an error because column 1 returns an empty string, which is not a
-  # valid column name. The actual column name we need it found on line 3.
-  # Perhaps we could make the general rule, that if there is a missing column
-  # name, then we can find that name by finding the next row below where the
-  # cells under the non-missing column names are all empty strings?
 }
 
 #' Strip pagination from a table
