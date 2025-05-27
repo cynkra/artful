@@ -156,7 +156,7 @@ strip_pagination <- function(data) {
   colnames_missing_indices <- which(colnames == "")
 
   for (i in colnames_missing_indices) {
-    replacement <- filter(data, if_all(!i, ~ .x == "")) |>
+    replacement <- filter(non_paginated, if_all(!i, ~ .x == "")) |>
       slice(1L) |>
       pull(i)
     colnames[i] <- replacement
