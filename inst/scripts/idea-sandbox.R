@@ -21,87 +21,39 @@ bms_3 <- system.file("extdata", "bms-3.rtf", package = "artful") |>
   html_to_dataframe() |>
   strip_pagination()
 
-
-# Find number of indentation
-bms_1_num_indents <- min(which(bms_1[[2]] != "" | is.na(bms_1))) - 1
-print(bms_1_num_indents)
-
-bms_3_num_indents <- min(which(bms_3[[2]] != "" | is.na(bms_3))) - 1
-print(bms_3_num_indents)
-
 # Separate table in multiple tables, split where the max number of indents
 # reappears
-bms_1 |>
-  mutate(
-    is_empty = .data[[colnames(bms_1)[[2]]]] == "",
-    prev_is_empty = lead(is_empty, default = FALSE),
-    start_table = is_empty & prev_is_empty,
-    group_id = cumsum(start_table)
-  ) |>
-  select(
-    -all_of(
-      c(
-        "is_empty",
-        "prev_is_empty",
-        "start_table"
-      )
-    )
-  ) |>
-  group_split(group_id, .keep = FALSE)
+split_data <- function(data) {
+  data_with_table_flag <- data |>
+    mutate(table_start = .data[[colnames(data)[[2]]]] == "")
 
-bms_3 |>
-  mutate(
-    is_empty = .data[[colnames(bms_3)[[2]]]] == "",
-    prev_is_empty = lead(is_empty, default = FALSE),
-    group_id = cumsum(prev_is_empty)
-  ) |>
-  select(
-    -all_of(
-      c(
-        "is_empty",
-        "prev_is_empty"
-      )
-    )
-  ) |>
-  group_split(group_id, .keep = FALSE)
+  indents <- min(which(data[[2]] != "" | is.na(data))) - 1
 
-
-library(dplyr)
-
-split_tables <- function(data, n_consecutive) {
-  df_with_marker <- data |>
-    mutate(
-      .starts_new_table_here = .data[[colnames(bms_3)[[2]]]] == "",
-    )
-
-  if (n_consecutive > 1) {
-    for (i in 1:(n_consecutive - 1)) {
-      df_with_marker <- df_with_marker |>
+  if (indents > 1) {
+    for (i in 1:(indents - 1)) {
+      data_with_table_flag <- data_with_table_flag |>
         mutate(
-          .lead_is_empty = dplyr::lead(
-            .data[[colnames(bms_3)[[2]]]] == "",
+          table_start_additional = dplyr::lead(
+            table_start,
             n = i,
             default = FALSE
           ),
-          .starts_new_table_here = .starts_new_table_here & .lead_is_empty
+          table_start = table_start & table_start_additional
         ) |>
-        select(-.lead_is_empty)
+        select(-table_start_additional)
     }
   }
 
-  list_of_tables <- df_with_marker |>
-    mutate(
-      .table_group_id = cumsum(.starts_new_table_here)
-    ) |>
-    filter(.table_group_id > 0) |>
-    select(-.starts_new_table_here) |>
-    group_split(.table_group_id, .keep = FALSE)
+  list_of_tables <- data_with_table_flag |>
+    mutate(table_id = cumsum(table_start)) |>
+    select(-table_start) |>
+    group_split(table_id, .keep = FALSE)
 
   return(list_of_tables)
 }
 
-split_tables(bms_1, 1)
-split_tables(bms_3, 1)
+split_data(bms_1)
+split_data(bms_3)
 
 # In each subtitle, extract indentation labels, and create new cols
 
