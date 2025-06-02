@@ -87,16 +87,43 @@ pivot_indentation <- function(data) {
   }
 }
 
+pivot_group <- function(data) {
+  data |>
+    rename(variable_level = 1) |>
+    pivot_longer(
+      !starts_with("variable_"),
+      names_to = "group1_level",
+      values_to = "stat"
+    )
+}
+
 bms_1 |>
   split_data() |>
   map(pivot_indentation) |>
-  list_rbind()
+  list_rbind() |>
+  pivot_group() |>
+  # ---- Custom call to match expected formatting ----
+  mutate(group1 = "TRT") |>
+  mutate(variable = str_to_upper(paste(variable_label1, variable_label2))) |>
+  mutate(variable = str_remove(variable, "FROM ")) |>
+  mutate(variable = str_replace_all(variable, " ", "_")) |>
+  select(
+    group1,
+    group1_level,
+    variable,
+    variable_label1,
+    variable_label2,
+    variable_level,
+    stat
+  )
 
 bms_3 |>
   split_data() |>
   map(pivot_indentation) |>
-  list_rbind()
+  list_rbind() |>
+  pivot_group()
 
+# ============================ EXPERIMENTAL ====================================
 # Below is an alternative solution that may scale to any number of indentations,
 # but the logic is hard to reason about, so for now, the simpler function above
 # is preferred until examples with more indentation levels arrive.
@@ -161,7 +188,3 @@ bms_3 |>
 #     left_join(label_df, by = ".row") |>
 #     select(-.row, -label, -level)
 # }
-
-# Bind all tables back together
-
-# Pivot longer the original column names into final group
