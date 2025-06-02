@@ -33,14 +33,14 @@ split_data <- function(data) {
     for (i in 1:(indents - 1)) {
       data_with_table_flag <- data_with_table_flag |>
         mutate(
-          table_start_additional = dplyr::lead(
+          shift_table_start = dplyr::lead(
             table_start,
             n = i,
             default = FALSE
           ),
-          table_start = table_start & table_start_additional
+          table_start = table_start & shift_table_start
         ) |>
-        select(-table_start_additional)
+        select(-shift_table_start)
     }
   }
 
