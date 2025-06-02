@@ -52,10 +52,10 @@ split_data <- function(data) {
   return(list_of_tables)
 }
 
-split_data(bms_1)
-split_data(bms_3)
+bms_1_tables <- split_data(bms_1)
+bms_3_tables <- split_data(bms_3)
 
-# In each subtitle, extract indentation labels, and create new cols
+# In each sub table, extract indentation labels, and create new cols
 
 # Bind all tables back together
 
