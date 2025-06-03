@@ -13,5 +13,6 @@ rtf_to_ard <- function(file) {
     rtf_to_html() |>
     html_to_dataframe() |>
     strip_pagination() |>
-    separate_indentation()
+    separate_indentation() |>
+    pivot_group()
 }

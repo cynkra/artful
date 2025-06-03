@@ -281,7 +281,9 @@ pivot_group <- function(data) {
       !starts_with("variable_"),
       names_to = "group1_level",
       values_to = "stat"
-    )
+    ) |>
+    mutate(group1 = "TRT", .before = 1) |>
+    select(starts_with("group"), starts_with("variable"), starts_with("stat"))
 }
 
 #' Separate a single indented column into multiple columns
@@ -300,10 +302,7 @@ separate_indentation <- function(data) {
   data |>
     split_data() |>
     map(pivot_indentation) |>
-    list_rbind() |>
-    pivot_group() |>
-    mutate(group1 = "TRT", .before = 1) |>
-    select(starts_with("group"), starts_with("variable"), starts_with("stat"))
+    list_rbind()
 }
 
 #' Separate a merged columns into multiple columns

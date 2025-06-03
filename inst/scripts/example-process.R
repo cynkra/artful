@@ -7,6 +7,7 @@ system.file("extdata", "bms-1.rtf", package = "artful") |>
   html_to_dataframe() |>
   strip_pagination() |>
   separate_indentation() |>
+  pivot_group() |>
   # custom code
   mutate(
     variable = stringr::str_to_upper(paste(variable_label1, variable_label2))
@@ -25,7 +26,8 @@ system.file("extdata", "bms-3.rtf", package = "artful") |>
   rtf_to_html() |>
   html_to_dataframe() |>
   strip_pagination() |>
-  separate_indentation()
+  separate_indentation() |>
+  pivot_group()
 
 # Calling control function
 system.file("extdata", "bms-3.rtf", package = "artful") |>
