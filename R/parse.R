@@ -180,6 +180,7 @@ strip_pagination <- function(data) {
 #' @return A list of data frames, each containing the same repeated levels of
 #' indentation (represented by empty strings in the second column).
 #'
+#' @autoglobal
 #' @keywords internal
 split_data <- function(data) {
   data_with_table_flag <- data |>
@@ -226,6 +227,7 @@ split_data <- function(data) {
 #'
 #' @return A data frame with indentation removed and placed into new columns.
 #'
+#' @autoglobal
 #' @keywords internal
 pivot_indentation <- function(data) {
   indents <- min(which(data[[2]] != "" | is.na(data))) - 1
