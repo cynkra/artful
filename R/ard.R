@@ -9,5 +9,9 @@
 #'
 #' @export
 rtf_to_ard <- function(file) {
-  # Placeholder
+  file |>
+    rtf_to_html() |>
+    html_to_dataframe() |>
+    strip_pagination() |>
+    separate_indentation()
 }
