@@ -7,5 +7,6 @@ utils::globalVariables(c(
   "is_label", # <pivot_indentation>
   "label_id", # <pivot_indentation>
   "variable_label2", # <pivot_indentation>
+  "group1_level", # <separate_bign>
   NULL
 ))

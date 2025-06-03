@@ -314,6 +314,7 @@ separate_indentation <- function(data) {
 #'
 #' @return A data frame with the Big N stat separated and placed at the top.
 #'
+#' @autoglobal
 #' @keywords internal
 separate_bign <- function(data) {
   big_n <- data |>
