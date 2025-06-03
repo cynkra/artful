@@ -1,7 +1,8 @@
 pkgload::load_all()
 
-# Double indentation
-bms_1 <- system.file("extdata", "bms-1.rtf", package = "artful") |>
+# ---- Double indentation ----
+# Calling sub-functions
+system.file("extdata", "bms-1.rtf", package = "artful") |>
   rtf_to_html() |>
   html_to_dataframe() |>
   strip_pagination() |>
@@ -14,13 +15,18 @@ bms_1 <- system.file("extdata", "bms-1.rtf", package = "artful") |>
   mutate(variable = stringr::str_replace_all(variable, " ", "_")) |>
   relocate(variable, .before = "variable_level")
 
-print(bms_1)
+# Calling control function
+system.file("extdata", "bms-1.rtf", package = "artful") |>
+  rtf_to_ard()
 
-# Single indentation
-bms_3 <- system.file("extdata", "bms-3.rtf", package = "artful") |>
+# ---- Single indentation ----
+# Calling sub-functions
+system.file("extdata", "bms-3.rtf", package = "artful") |>
   rtf_to_html() |>
   html_to_dataframe() |>
   strip_pagination() |>
   separate_indentation()
 
-print(bms_3)
+# Calling control function
+system.file("extdata", "bms-3.rtf", package = "artful") |>
+  rtf_to_ard()
