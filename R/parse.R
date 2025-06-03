@@ -305,6 +305,43 @@ separate_indentation <- function(data) {
     list_rbind()
 }
 
+#' Separate the Big N stat
+#'
+#' Extract the Big N stat and place it at the top of a table.
+#'
+#' @param data A data frame containing a column called "group1_level" which
+#' contains the Big N statistic merged as part of the text.
+#'
+#' @return A data frame with the Big N stat separated and placed at the top.
+#'
+#' @keywords internal
+separate_bign <- function(data) {
+  big_n <- data |>
+    distinct(group1_level) |>
+    separate_wider_regex(
+      group1_level,
+      patterns = c(
+        variable_label1 = ".*?\\S+",
+        "\\s+",
+        "(?:\\(N = |N = )",
+        stat = "\\d+",
+        "\\)?"
+      )
+    ) |>
+    mutate(stat_name = "N_header", stat_label = "N", .before = "stat")
+
+  data <- data |>
+    mutate(
+      group1_level = stringr::str_extract(
+        group1_level,
+        ".*?\\S+(?=\\s*(?:\\(N = |N = ))"
+      )
+    )
+
+  bind_rows(big_n, data) |>
+    select(starts_with("group"), starts_with("variable"), starts_with("stat"))
+}
+
 #' Separate a merged columns into multiple columns
 #'
 #' This function separates columns containing merged values (e.g., where a count
