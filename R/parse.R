@@ -300,7 +300,8 @@ separate_indentation <- function(data) {
     map(pivot_indentation) |>
     list_rbind() |>
     pivot_group() |>
-    mutate(group1 = "TRT", .before = 1)
+    mutate(group1 = "TRT", .before = 1) |>
+    select(starts_with("group"), starts_with("variable"), starts_with("stat"))
 }
 
 #' Separate a merged columns into multiple columns
