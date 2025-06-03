@@ -2,3 +2,5 @@
 
 export(rtf_to_ard)
 import(dplyr)
+import(purrr)
+import(tidyr)
