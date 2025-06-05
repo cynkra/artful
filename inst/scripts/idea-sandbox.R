@@ -78,3 +78,39 @@ locate_stats(bms_2)
 locate_stats(bms_3)
 locate_stats(bms_4)
 locate_stats(bms_5)
+
+stat_first_colname <- function() {
+  # Extract first colname stat
+}
+
+stat_top_left_cell <- function() {
+  # Extract top left cell stat
+}
+
+stat_col1_cells <- function() {
+  # Extract col1 cells stat
+}
+
+stat_grouping_colnames <- function() {
+  # Extract grouping colnames stat
+}
+
+# stat_first_colname workflow
+bms_1 |>
+  separate_indentation() |>
+  pivot_group() |>
+  tidyr::separate_wider_regex(
+    cols = stat,
+    patterns = c(
+      n = "\\d+",
+      "\\s*\\(\\s*",
+      p = "\\d*\\.?\\d+",
+      "\\s*\\)"
+    )
+  ) |>
+  tidyr::pivot_longer(
+    cols = c(n, p),
+    names_to = "stat_name",
+    values_to = "stat"
+  ) |>
+  separate_bign()
