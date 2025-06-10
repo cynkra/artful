@@ -1,54 +1,43 @@
 library(tidyverse)
 pkgload::load_all()
 
-# Separate statistics
+# ---- Separate statistics ----
 # Depending upon the table, the information detailing which stats are included
 # can be found in one of three places:
-# 1. The top-left column name or cell (bms-1)
-# 2. In the cells of rows in column 1 (bms-3)
-# 3. In the column header s (bms-4 and bms-5)
-# A mixture (bms-2)
+# 1. Top-left: the top-left column name or cell
+# 2. Column-one: In the cells of rows in column 1
+# 3. Grouping-colnames: columns that make up the grouping levels in the call to
+#    `pivot_group()`
 
-# Strategy:
-
-# Find which of the three stat location types a table falls into
-# locate_stats <- function()
-
-# Extract the stats into a separate table
-# extract_stats <- function()
-
-# Merge the stats back into the original table
-# merge_stats <- function()
-
-# Class 1
+# Top-left
 bms_1 <- system.file("extdata", "bms-1.rtf", package = "artful") |>
   rtf_to_html() |>
   html_to_dataframe() |>
   strip_pagination()
 bms_1
 
-# Class 1 and 2
+# Top-left & Column-one
 bms_2 <- system.file("extdata", "bms-2.rtf", package = "artful") |>
   rtf_to_html() |>
   html_to_dataframe() |>
   strip_pagination()
 bms_2
 
-# Class 2
+# Column-one
 bms_3 <- system.file("extdata", "bms-3.rtf", package = "artful") |>
   rtf_to_html() |>
   html_to_dataframe() |>
   strip_pagination()
 bms_3
 
-# Class 2
+# Column-one
 bms_4 <- system.file("extdata", "bms-4.rtf", package = "artful") |>
   rtf_to_html() |>
   html_to_dataframe() |>
   strip_pagination()
 bms_4
 
-# Class 3
+# Grouping-colnames
 bms_5 <- system.file("extdata", "bms-5.rtf", package = "artful") |>
   rtf_to_html() |>
   html_to_dataframe() |>
@@ -79,23 +68,9 @@ locate_stats(bms_3)
 locate_stats(bms_4)
 locate_stats(bms_5)
 
-stat_first_colname <- function() {
-  # Extract first colname stat
-}
-
-stat_top_left_cell <- function() {
-  # Extract top left cell stat
-}
-
-stat_col1_cells <- function() {
-  # Extract col1 cells stat
-}
-
-stat_grouping_colnames <- function() {
-  # Extract grouping colnames stat
-}
-
-# stat_first_colname workflow
+# ---- Top-left workflow ----
+# Left to solve: how does the workflow know to allocate "n" and "p". Need some
+# input arg which gets populated by a parser which determines the stats to use.
 bms_1 |>
   separate_indentation() |>
   pivot_group() |>
@@ -112,5 +87,55 @@ bms_1 |>
     cols = c(n, p),
     names_to = "stat_name",
     values_to = "stat"
+  ) |>
+  mutate(
+    stat_label = case_when(
+      stat_name == "n" ~ "n",
+      stat_name = "p" ~ "%",
+      .default = stat_name
+    )
+  ) |>
+  separate_bign()
+
+# ---- Column-one workflow ----
+bms_3 |>
+  separate_indentation() |>
+  pivot_group() |>
+  mutate(
+    n = case_when(
+      str_detect(variable_level, "\\(95% CI\\)") ~
+        str_extract(stat, "^-?\\d+\\.?\\d*"),
+      str_detect(variable_level, "\\(%\\)") ~
+        str_extract(stat, "^-?\\d+\\.?\\d*"),
+      TRUE ~ str_extract(stat, "^-?\\d+\\.?\\d*")
+    ),
+    ci_low = case_when(
+      str_detect(variable_level, "\\(95% CI\\)") ~
+        str_extract(stat, "\\(-?\\d+\\.?\\d*") |>
+          str_remove_all("\\(|\\)")
+    ),
+    ci_high = case_when(
+      str_detect(variable_level, "\\(95% CI\\)") ~
+        str_extract(stat, ",\\s*-?\\d+\\.?\\d*\\)") |>
+          str_remove_all("\\(|\\)|,")
+    ),
+    p = case_when(
+      str_detect(variable_level, "\\(%\\)") ~
+        str_extract(stat, "\\(-?\\d+\\.?\\d*\\)") |>
+          str_remove_all("\\(|\\)")
+    )
+  ) |>
+  select(-stat) |>
+  tidyr::pivot_longer(
+    cols = c(n, ci_low, ci_high, p),
+    names_to = "stat_name",
+    values_to = "stat"
+  ) |>
+  mutate(
+    stat_label = case_when(
+      stat_name == "p" ~ "%",
+      .default = stat_name
+    ),
+    .after = stat_name
   ) |>
   separate_bign()
