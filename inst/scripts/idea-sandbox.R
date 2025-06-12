@@ -91,7 +91,7 @@ bms_1 |>
   mutate(
     stat_label = case_when(
       stat_name == "n" ~ "n",
-      stat_name = "p" ~ "%",
+      stat_name == "p" ~ "%",
       .default = stat_name
     )
   ) |>
@@ -130,6 +130,36 @@ bms_3 |>
     cols = c(n, ci_low, ci_high, p),
     names_to = "stat_name",
     values_to = "stat"
+  ) |>
+  mutate(
+    stat_label = case_when(
+      stat_name == "p" ~ "%",
+      .default = stat_name
+    ),
+    .after = stat_name
+  ) |>
+  separate_bign()
+
+# ---- Grouping-colnames workflow -----
+bms_5_ready <- bms_5 |>
+  separate_indentation() |>
+  pivot_group()
+
+bms_5_ready |>
+  mutate(
+    n = str_extract(stat, "^\\d+"),
+    p = str_extract(stat, "(?<=\\()\\s*([\\d.]+)\\s*(?=\\))", group = 1),
+    e = str_extract(stat, "\\d+$")
+  ) |>
+  select(-stat) |>
+  pivot_longer(
+    cols = c(n, p, e),
+    names_to = "stat_name",
+    values_to = "stat"
+  ) |>
+  mutate(
+    group1_level = str_remove_all(group1_level, "n\\(%\\)\\s+e$"),
+    group1_level = str_squish(group1_level)
   ) |>
   mutate(
     stat_label = case_when(
