@@ -56,13 +56,17 @@ bms_5 <- system.file("extdata", "bms-5.rtf", package = "artful") |>
 bms_5
 
 # ---- Reflections ----
-# All three types of problem are just the same problem. We need to extract the
-# stats from the stat column. The different lies in where the "key" is telling
-# the extraction engine how to parse the stat column. In "top-left" the key is
-# the top-left cell. In "column-one" the keys lie in the the row values in the
-# `variable_level` column. In "grouping-colnames", the key lies in the
-# `group1_level` column. So the extraction engine should have an argument "key",
-# or something of that nature, which informs the stat column how to get parsed.
+# - All three types of problem are just the same problem. We need to extract the
+#   stats from the stat column. The different lies in where the "key" is telling
+#   the extraction engine how to parse the stat column. In "top-left" the key is
+#   the top-left cell. In "column-one" the keys lie in the the row values in the
+#   `variable_level` column. In "grouping-colnames", the key lies in the
+#   `group1_level` column. So the extraction engine should have an argument
+#   "key", or something of that nature, which informs the stat column how to get
+#   parsed.
+# - This key can have implict values (top-left) and explicit values (others).
+# - the order of the labels (whether extracted or implicitly known) dictates the
+#   order of the values.
 
 # ---- Helper funs ----
 check_stat <- function(string) {
