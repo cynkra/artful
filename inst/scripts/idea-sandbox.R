@@ -13,37 +13,58 @@ pkgload::load_all()
 bms_1 <- system.file("extdata", "bms-1.rtf", package = "artful") |>
   rtf_to_html() |>
   html_to_dataframe() |>
-  strip_pagination()
+  strip_pagination() |>
+  separate_indentation() |>
+  pivot_group()
 bms_1
 
-# Top-left & Column-one
+# Column-one (after calling separate_indentation() and pivot_group() the
+# top-left stat becomes part of column one)
 bms_2 <- system.file("extdata", "bms-2.rtf", package = "artful") |>
   rtf_to_html() |>
   html_to_dataframe() |>
-  strip_pagination()
+  strip_pagination() |>
+  separate_indentation() |>
+  pivot_group()
 bms_2
 
 # Column-one
 bms_3 <- system.file("extdata", "bms-3.rtf", package = "artful") |>
   rtf_to_html() |>
   html_to_dataframe() |>
-  strip_pagination()
+  strip_pagination() |>
+  separate_indentation() |>
+  pivot_group()
 bms_3
 
 # Column-one
 bms_4 <- system.file("extdata", "bms-4.rtf", package = "artful") |>
   rtf_to_html() |>
   html_to_dataframe() |>
-  strip_pagination()
+  strip_pagination() |>
+  separate_indentation() |>
+  pivot_group()
 bms_4
 
 # Grouping-colnames
 bms_5 <- system.file("extdata", "bms-5.rtf", package = "artful") |>
   rtf_to_html() |>
   html_to_dataframe() |>
-  strip_pagination()
+  strip_pagination() |>
+  separate_indentation() |>
+  pivot_group()
 bms_5
 
+# ---- Reflections ----
+# All three types of problem are just the same problem. We need to extract the
+# stats from the stat column. The different lies in where the "key" is telling
+# the extraction engine how to parse the stat column. In "top-left" the key is
+# the top-left cell. In "column-one" the keys lie in the the row values in the
+# `variable_level` column. In "grouping-colnames", the key lies in the
+# `group1_level` column. So the extraction engine should have an argument "key",
+# or something of that nature, which informs the stat column how to get parsed.
+
+# ---- Helper funs ----
 check_stat <- function(string) {
   str_detect(string, "\\(\\%\\)|\\(95\\% CI\\)")
 }
@@ -62,18 +83,59 @@ locate_stats <- function(data) {
   print(paste0("Grouping colnames: ", grouping_colnames))
 }
 
-locate_stats(bms_1)
-locate_stats(bms_2)
-locate_stats(bms_3)
-locate_stats(bms_4)
-locate_stats(bms_5)
+# TODO:
+# Currently this function only works for bms_5 and assumes that the stats
+# happen to be in the order of n, p, e. The function needs to utilise this idea
+# of a key to determine how to parse the stats.
 
-# ---- Top-left workflow ----
+#' Parse a stat col into separate statistics
+stat_col_parse <- function(data) {
+  if ("stat" %!in% colnames(data)) {
+    stop(
+      paste0(
+        "A column named 'stat' of type `<chr>` containing statistical values ",
+        "must be present in the data."
+      )
+    )
+  }
+
+  if ("group1_level" %!in% colnames(data)) {
+    stop(
+      paste0(
+        "A column named 'group1_level' of type `<chr>` containing statistical ",
+        "labels must be present in the data."
+      )
+    )
+  }
+
+  extracted_stats <- data |>
+    select(group1_level, stat) |>
+    mutate(id = row_number()) |>
+    mutate(
+      n = str_extract(stat, "^\\d+"),
+      p = str_extract(stat, "(?<=\\()\\s*([\\d.]+)\\s*(?=\\))", group = 1),
+      e = str_extract(stat, "\\d+$")
+    ) |>
+    select(-group1_level, -stat)
+
+  data |>
+    mutate(id = row_number()) |>
+    left_join(extracted_stats, by = "id") |>
+    select(-stat, -id) |>
+    pivot_longer(
+      cols = setdiff(colnames(extracted_stats), "id"),
+      names_to = "stat_name",
+      values_to = "stat"
+    )
+}
+
+bms_5 |>
+  stat_col_parse()
+
+# ---- Top-left workflows ----
 # Left to solve: how does the workflow know to allocate "n" and "p". Need some
 # input arg which gets populated by a parser which determines the stats to use.
 bms_1 |>
-  separate_indentation() |>
-  pivot_group() |>
   tidyr::separate_wider_regex(
     cols = stat,
     patterns = c(
@@ -97,10 +159,8 @@ bms_1 |>
   ) |>
   separate_bign()
 
-# ---- Column-one workflow ----
+# ---- Column-one workflows ----
 bms_3 |>
-  separate_indentation() |>
-  pivot_group() |>
   mutate(
     n = case_when(
       str_detect(variable_level, "\\(95% CI\\)") ~
@@ -141,11 +201,7 @@ bms_3 |>
   separate_bign()
 
 # ---- Grouping-colnames workflow -----
-bms_5_ready <- bms_5 |>
-  separate_indentation() |>
-  pivot_group()
-
-bms_5_ready |>
+bms_5 |>
   mutate(
     n = str_extract(stat, "^\\d+"),
     p = str_extract(stat, "(?<=\\()\\s*([\\d.]+)\\s*(?=\\))", group = 1),
