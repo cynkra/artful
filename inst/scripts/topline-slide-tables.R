@@ -46,7 +46,7 @@ data.frame(x = c("<= 10", ">= 10", "< 10", "> 10")) |>
 rtf_to_html(rtf_r2rtf) |>
   html_to_dataframe()
 
-# Attempt at ARF conversion:
+# Attempt at ARD conversion:
 system.file("extdata", "rt-dm-demo.rtf", package = "artful") |>
   rtf_to_html() |>
   html_to_dataframe() |>
@@ -95,16 +95,21 @@ system.file("extdata", "rt-dm-basedz.rtf", package = "artful") |>
   rtf_to_html() |>
   html_to_dataframe() |>
   shift_col_right() |>
-  strip_pagination() |>
+  View()
+strip_pagination() |>
   separate_indentation() |>
   pivot_group() |>
   View()
 
-# Issue two: the second level of indentation for race and geography is not
-# detected. This is lost when converting at the pandoc level. Given that
-# indentation isn't lost on other tables, it is suspected that this is an issue
-# with the supplied table rather than the conversion methodology used in this
-# package.
+# Issue two: the second level of indentation is dropped. In this instance it is
+# because the first headers are just stripped and empty rows are used to denote
+# breaks between second level headers. The current heuristic uses the number of
+# headers to determine indentation, and so doesn't work with this example. We
+# could infer second levels of indentations based off empty rows, but empty rows
+# also indicate new first level headers. It is therefore currently impossible to
+# determine if a bunch of rows under an empty row refers to a first or second
+# level header. The only solution is to keep the original indented whitespace
+# and use that to determine indentation.
 
 # ---- Slide 8 -----------------------------------------------------------------
 # rt-ds-pretrt.rtf
