@@ -102,14 +102,54 @@ strip_pagination() |>
   View()
 
 # Issue two: the second level of indentation is dropped. In this instance it is
-# because the first headers are just stripped and empty rows are used to denote
-# breaks between second level headers. The current heuristic uses the number of
-# headers to determine indentation, and so doesn't work with this example. We
-# could infer second levels of indentations based off empty rows, but empty rows
-# also indicate new first level headers. It is therefore currently impossible to
-# determine if a bunch of rows under an empty row refers to a first or second
-# level header. The only solution is to keep the original indented whitespace
-# and use that to determine indentation.
+# because there is a mixture in the number of indents throughout the table. This
+# is contrast to something like bms-1 through bms-5 where the indents are always
+# consistent. The current heuristic resets indentation by looking out for
+# repeated levels of indentation. This means it fails for this example as the
+# indentation levels vary and don't repeat. We can't infer second levels of
+# indentations based off empty rows because they signify both a break in the
+# same number of indentation, and a new level of indentation. The only solution
+# is to keep the original indented whitespace and use that to determine
+# indentation. But, the current solution strips whitespace as HTML collapses
+# multiple spaces by default:
+html_file <- tempfile(fileext = ".html")
+
+system.file("extdata", "rt-dm-basedz.rtf", package = "artful") |>
+  rtf_to_html() |>
+  writeLines(html_file)
+
+browseURL(html_file)
+
+# Solutions to maintain whitespace:
+# - First, read in stream of rtf tables, and then use some regex / string
+#   manipulation to replace spaces with non-breaking spaces that will be
+#   maintained during the conversion: https://github.com/jgm/pandoc/issues/10077
+#   can we use the literal "{  <INSERT TEXT>\cell}" to identify cells within
+#   which we can replace the spaces with non-breaking spaces or something
+#   pandoc respects
+# - Second, find a system2() call to pandoc which maintains spaces, if possible.
+
+# This partially works
+process_rtf_whitespace <- function(path) {
+  read_file(path) %>%
+    str_replace_all("(\\{)( +)(.*?\\\\cell\\})", "\\1&nbsp;\\3")
+}
+
+# This doesn't work
+process_rtf_whitespace <- function(rtf_path) {
+  read_file(rtf_path) |>
+    str_replace_all("  ", "&nbsp;&nbsp;")
+}
+
+temp_rtf <- tempfile(fileext = ".rtf")
+temp_html <- tempfile(fileext = ".html")
+
+system.file("extdata", "rt-dm-basedz.rtf", package = "artful") |>
+  process_rtf_whitespace() |>
+  writeLines(temp_rtf)
+
+rtf_to_html(temp_rtf) |>
+  writeLines(temp_html)
 
 # ---- Slide 8 -----------------------------------------------------------------
 # rt-ds-pretrt.rtf
