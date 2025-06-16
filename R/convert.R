@@ -20,8 +20,6 @@ rtf_to_html <- function(file) {
     )
   }
 
-  message("Attempting conversion...")
-
   result <- system2(
     "pandoc",
     args = c("--from", "rtf", "--to", "html", shQuote(file)),
