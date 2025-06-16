@@ -51,3 +51,4 @@ rsconnect/
 
 # Table examples provided by BMS
 inst/extdata/bms-*.rtf
+inst/extdata/rt-*.rtf
