@@ -49,9 +49,13 @@ system.file("extdata", "rt-dm-basedz.rtf", package = "artful") |>
 # TODO: summary for slide 7 ----
 # 1. Update rtf_indentation to replace number of spaces with same number of
 #    &nbsp; ✅
-# 2. Fix indentation issue and update parsing algorithm to determine levels
-# 3. Fix offset column issue by manipulating raw RTF file
-# 4. Write stats parsers that will extract stats from the above two examples
+# 2. Check that rtf_indentation() correctly detects indentation for the tables
+#    listed above (render HTML), and tweak function as necessary. Note: the
+#    RTF files will first need to be read in and converted to a string before
+#    being passed to rtf_indentation(). Use readr::read_file() here.
+# 3. Fix indentation issue and update parsing algorithm to determine levels
+# 4. Fix offset column issue by manipulating raw RTF file
+# 5. Write stats parsers that will extract stats from the above two examples
 
 # ---- Slide 8 -----------------------------------------------------------------
 # rt-ds-pretrt.rtf
