@@ -47,9 +47,11 @@ system.file("extdata", "rt-dm-basedz.rtf", package = "artful") |>
 # it doesn't persist when making the call to pandoc.
 
 # TODO: summary for slide 7 ----
-# 1. Fix indentation issue and update parsing algorithm to determine levels
-# 2. Fix offset column issue by manipulating raw RTF file
-# 3. Write stats parsers that will extract stats from the above two examples
+# 1. Update rtf_indentation to replace number of spaces with same number of
+#    &nbsp; ✅
+# 2. Fix indentation issue and update parsing algorithm to determine levels
+# 3. Fix offset column issue by manipulating raw RTF file
+# 4. Write stats parsers that will extract stats from the above two examples
 
 # ---- Slide 8 -----------------------------------------------------------------
 # rt-ds-pretrt.rtf
