@@ -43,5 +43,6 @@ rtf_indentation <- function(string) {
     stringr::str_replace_all(
       "\\\\li576",
       "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-    )
+    ) |>
+    stringr::str_replace_all("\\\\pnhang", "&nbsp;&nbsp;")
 }
