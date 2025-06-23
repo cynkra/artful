@@ -38,7 +38,6 @@ rtf_indentation <- function(string) {
       nbsp_replacement <- paste(rep("&nbsp;", space_count), collapse = "")
       paste0(groups[, 2], nbsp_replacement, groups[, 4])
     }) |>
-    stringr::str_replace_all("(\\{)( +)(.*?\\\\cell\\})", "\\1&nbsp;\\3") |>
     stringr::str_replace_all("\\\\li192", "&nbsp;&nbsp;") |>
     stringr::str_replace_all("\\\\li384", "&nbsp;&nbsp;&nbsp;&nbsp;") |>
     stringr::str_replace_all(
