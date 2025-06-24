@@ -372,3 +372,32 @@ separate_merges <- function(data) {
 separate_spanners <- function(data) {
   # Placeholder
 }
+
+#' Manage table expcetions
+#'
+#' Several tables do not align with the general ruleset and must be treated as
+#' exceptions that get special processing to re-align them.
+#'
+#' @keywords internal
+manage_exceptions <- function(data) {
+  if (
+    data[[1]][[1]] ==
+      "Table 14.1.4.1Baseline Disease Characteristics SummaryRandomized Population"
+  ) {
+    result <- map_dfr(
+      .x = 1:nrow(data),
+      .f = \(x) {
+        current_row <- as.character(data[x, ])
+        if (identical(current_row, as.character(data[2L, ]))) {
+          shifted <- c("", current_row[-length(current_row)])
+        } else {
+          shifted <- current_row
+        }
+        tibble(!!!set_names(shifted[-2L], names(data)[-2L]))
+      }
+    )
+    return(result)
+  } else {
+    return(data)
+  }
+}

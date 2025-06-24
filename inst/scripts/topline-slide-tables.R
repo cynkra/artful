@@ -7,25 +7,6 @@ pkgload::load_all()
 
 # ---- rt-dm-basedz.rtf ----
 
-# The raw table has misalgined columns which throw the reading off from the
-# start. We can shift the column names to fix the issue with a custom function:
-shift_col_right <- function(df, shift_row = 2L, delete_col = 2L) {
-  pattern_row <- as.character(df[shift_row, ])
-  result <- map_dfr(
-    .x = 1:nrow(df),
-    .f = \(x) {
-      current_row <- as.character(df[x, ])
-      if (identical(current_row, pattern_row)) {
-        shifted <- c("", current_row[-length(current_row)])
-      } else {
-        shifted <- current_row
-      }
-      tibble(!!!set_names(shifted[-delete_col], names(df)[-delete_col]))
-    }
-  )
-  return(result)
-}
-
 # But, we should instead manipualte the raw RTF file to remove this issue so
 # it doesn't persist when making the call to pandoc.
 
@@ -72,16 +53,18 @@ library(tidyverse)
 pkgload::load_all()
 
 temp_rtf <- tempfile(fileext = ".rtf")
-# system.file("extdata", "rt-dm-demo.rtf", package = "artful") |>
-system.file("extdata", "rt-dm-basedz.rtf", package = "artful") |>
+system.file("extdata", "rt-dm-demo.rtf", package = "artful") |>
+  # system.file("extdata", "rt-dm-basedz.rtf", package = "artful") |>
   read_file() |>
   rtf_indentation() |>
   write_file(temp_rtf)
 
-df <- rtf_to_html(temp_rtf) |>
+# df <-
+rtf_to_html(temp_rtf) |>
   html_to_dataframe() |>
-  shift_col_right() |>
-  strip_pagination()
+  manage_exceptions()
+
+strip_pagination()
 
 df_labelled <- df |>
   mutate(nbsp_count = str_count(df[[1]], fixed("&nbsp;"))) |>
