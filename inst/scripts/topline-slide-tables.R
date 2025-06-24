@@ -4,23 +4,6 @@ pkgload::load_all()
 # ---- Slide 7 -----------------------------------------------------------------
 
 # ---- rt-dm-demo.rtf ----
-temp_rtf <- tempfile(fileext = ".rtf")
-system.file("extdata", "rt-dm-demo.rtf", package = "artful") |>
-  read_file() |>
-  rtf_indentation() |>
-  write_file(temp_rtf)
-
-rtf_to_html(temp_rtf) |>
-  html_to_dataframe() |>
-  strip_pagination() |>
-  strip_indentation() # New WIP fun
-
-
-separate_indentation()
-pivot_group() |>
-  View()
-
-tibble(nbsp_count = c(0, 4, 4, 4, 0, 2, 2, 2, 4, 4, 0, 6, 0))
 
 # ---- rt-dm-basedz.rtf ----
 
@@ -42,15 +25,6 @@ shift_col_right <- function(df, shift_row = 2L, delete_col = 2L) {
   )
   return(result)
 }
-
-system.file("extdata", "rt-dm-basedz.rtf", package = "artful") |>
-  rtf_to_html() |>
-  html_to_dataframe() |>
-  shift_col_right() |> # Shift columns right
-  strip_pagination() |>
-  separate_indentation() |>
-  pivot_group() |>
-  View()
 
 # But, we should instead manipualte the raw RTF file to remove this issue so
 # it doesn't persist when making the call to pandoc.
@@ -96,17 +70,20 @@ system.file("extdata", "rt-dm-basedz.rtf", package = "artful") |>
 
 library(tidyverse)
 pkgload::load_all()
+
 temp_rtf <- tempfile(fileext = ".rtf")
-system.file("extdata", "rt-dm-demo.rtf", package = "artful") |>
+# system.file("extdata", "rt-dm-demo.rtf", package = "artful") |>
+system.file("extdata", "rt-dm-basedz.rtf", package = "artful") |>
   read_file() |>
   rtf_indentation() |>
   write_file(temp_rtf)
 
 df <- rtf_to_html(temp_rtf) |>
   html_to_dataframe() |>
+  shift_col_right() |>
   strip_pagination()
 
-df |>
+df_labelled <- df |>
   mutate(nbsp_count = str_count(df[[1]], fixed("&nbsp;"))) |>
   mutate(group = cumsum(nbsp_count == 0)) |>
   mutate(
@@ -149,3 +126,7 @@ df |>
       ~ str_replace_all(., fixed("&nbsp;"), "")
     )
   )
+
+df_labelled |>
+  pivot_group() |>
+  View()
