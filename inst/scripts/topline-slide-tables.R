@@ -12,6 +12,8 @@ pkgload::load_all()
 # 3. Fix indentation issue and update parsing algorithm to determine levels ✅
 # 4. Fix offset column issue by manipulating raw RTF file ✅
 # 5. Write stats parsers that will extract stats from the above two examples
+# 6. Update separate_bign() to handle these two cases. Currently it looks for
+#    N in brackets, here there are no brackets.
 
 # ---- rt-dm-demo.rtf ----
 temp_rtf <- tempfile(fileext = ".rtf")
@@ -26,7 +28,11 @@ rtf_to_html(temp_rtf) |>
   manage_exceptions() |>
   strip_pagination() |>
   strip_indentation() |>
-  pivot_group()
+  pivot_group() |>
+  separate_bign()
+
+# Issue: group1_level big_n newline breaks in raw rtf are not being respected.
+# It should be "PBO N = 334", not "PBON = 334"
 
 # ---- rt-dm-basedz.rtf ----
 temp_rtf <- tempfile(fileext = ".rtf")
