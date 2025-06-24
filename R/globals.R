@@ -10,12 +10,6 @@ utils::globalVariables(c(
   "value", # <strip_indentation>
   "variable_label0", # <strip_indentation>
   "variable_level", # <strip_indentation>
-  "table_start", # <split_data>
-  "shift_table_start", # <split_data>
-  "table_id", # <split_data>
-  "is_label", # <pivot_indentation>
-  "label_id", # <pivot_indentation>
-  "variable_label2", # <pivot_indentation>
   "group1_level", # <separate_bign>
   NULL
 ))
