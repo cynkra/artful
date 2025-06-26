@@ -62,11 +62,6 @@ two <- rtf_to_html(temp_rtf) |>
 # pivot_longer all the places a stat can be found, and incrementally parse
 # these, then pivot_wider again.
 
-# NOTE: I don't think this strategy is going to work, it assumes the stat
-# is uniquely contained in a single row, and this isn't always the case?
-# At least we can't drop any values when pivotting back wider, as we need to
-# keep all combinations of variable_ values to identify a single stat.
-
 df <- bind_rows(one, two)
 df_id <- mutate(df, id = row_number(), .before = 1)
 
@@ -154,3 +149,12 @@ stats_unfound_parsed_wide <- stats_unfound |>
 
 bind_rows(stats_found_parsed_wide, stats_unfound_parsed_wide) |>
   arrange(id)
+
+# TODO:
+# - Remove the stats_unfound call, and just expand the block that parses the
+#   stats to try and find all stats at once.
+
+# NOTE: I'm not sure this strategy is going to work, it assumes the stat
+# is uniquely contained in a single row, and this isn't always the case?
+# At least we can't drop any values when pivotting back wider, as we need to
+# keep all combinations of variable_* values to identify a single stat.
