@@ -1,6 +1,15 @@
 library(tidyverse)
 pkgload::load_all()
 
+# ---- Slide 8 -----------------------------------------------------------------
+# rt-ds-pretrt.rtf
+# rt-ds-trtwk16.rtf
+
+# ---- Slide 9 -----------------------------------------------------------------
+# rt-ef-acr20.rtf
+# rt-ef-aacr50.rtf
+# rt-ef-aacr70.rtf
+
 # ---- Slide 7 -----------------------------------------------------------------
 # TODO:
 # 1. Update rtf_indentation to replace number of spaces with same number of
@@ -23,13 +32,12 @@ system.file("extdata", "rt-dm-demo.rtf", package = "artful") |>
   rtf_indentation() |>
   write_file(temp_rtf)
 
-rtf_to_html(temp_rtf) |>
+one <- rtf_to_html(temp_rtf) |>
   html_to_dataframe() |>
   manage_exceptions() |>
   strip_pagination() |>
   strip_indentation() |>
-  pivot_group() |>
-  separate_bign()
+  pivot_group()
 
 # Issue: group1_level big_n newline breaks in raw rtf are not being respected.
 # It should be "PBO N = 334", not "PBON = 334"
@@ -42,18 +50,107 @@ system.file("extdata", "rt-dm-basedz.rtf", package = "artful") |>
   rtf_indentation() |>
   write_file(temp_rtf)
 
-rtf_to_html(temp_rtf) |>
+two <- rtf_to_html(temp_rtf) |>
   html_to_dataframe() |>
   manage_exceptions() |>
   strip_pagination() |>
   strip_indentation() |>
   pivot_group()
 
-# ---- Slide 8 -----------------------------------------------------------------
-# rt-ds-pretrt.rtf
-# rt-ds-trtwk16.rtf
+# ---- Stats parser ----
+# A workflow for parsing stats is seen below. The key mechanism is to
+# pivot_longer all the places a stat can be found, and incrementally parse
+# these, then pivot_wider again.
 
-# ---- Slide 9 -----------------------------------------------------------------
-# rt-ef-acr20.rtf
-# rt-ef-aacr50.rtf
-# rt-ef-aacr70.rtf
+# NOTE: I don't think this strategy is going to work, it assumes the stat
+# is uniquely contained in a single row, and this isn't always the case?
+# At least we can't drop any values when pivotting back wider, as we need to
+# keep all combinations of variable_ values to identify a single stat.
+
+df <- bind_rows(one, two)
+df_id <- mutate(df, id = row_number(), .before = 1)
+
+stat_lookup <- tribble(
+  ~stat_name, ~stat_label,
+  "n", "n",
+  "N", "N",
+  "N_obs", "N Observed",
+  "N_miss", "N Missing", 
+  "p", "%" ,
+  "pct", "%" ,
+  "mean", "Mean" ,
+  "sd", "SD",
+  "se", "SE", 
+  "median", "Median" ,
+  "p25", "Q1",
+  "p75", "Q3",
+  "iqr", "IQR" ,	
+  "min", "Min", 
+  "max", "Max",
+  "range", "Range", 	
+  "geom_mean", "Geometric Mean",
+  "cv", "CV (%)" 
+)
+
+all_terms <- c(stat_lookup$stat_name, stat_lookup$stat_label)
+
+pattern <- paste0(
+  "\\b(",
+  paste(str_to_lower(all_terms), collapse = "|"),
+  ")\\b"
+)
+
+df_id_long <- df_id |>
+  pivot_longer(
+    starts_with("variable_")
+  )
+
+# this isn't working properly, it is matching on values it should not such as
+# BASELINE BSA n(%)
+stats_found <- df_id_long |>
+  filter(
+    str_detect(
+      str_to_lower(value),
+      regex(pattern, ignore_case = TRUE)
+    )
+  )
+
+stats_unfound <- df_id_long |>
+  anti_join(stats_found)
+
+stats_found_parsed <- stats_found |>
+  mutate(
+    N = if_else(value == "N", stat, NA),
+    mean = if_else(value == "MEAN", stat, NA),
+    sd = if_else(value == "SD", stat, NA),
+    median = if_else(value == "MEDIAN", stat, NA),
+    p25 = if_else(
+      str_detect(value, "^Q1"),
+      str_extract(stat, "^[^,]+"),
+      NA
+    ),
+    p75 = if_else(
+      str_detect(value, "Q3$"),
+      str_extract(stat, "(?<=,)\\s*([^\\s]+)"),
+      NA
+    )
+  ) |>
+  select(-stat) |>
+  pivot_longer(
+    cols = c("N", "mean", "sd", "median", "p25", "p75"),
+    names_to = "stat_name",
+    values_to = "stat"
+  ) |>
+  mutate(stat = str_trim(stat)) |>
+  filter(!is.na(stat)) |>
+  left_join(stat_lookup) |>
+  relocate(stat_label, .before = "stat")
+
+stats_found_parsed_wide <- stats_found_parsed |>
+  pivot_wider()
+
+stats_unfound_parsed_wide <- stats_unfound |>
+  pivot_wider()
+
+bind_rows(stats_found_parsed_wide, stats_unfound_parsed_wide) |>
+  arrange(id)
