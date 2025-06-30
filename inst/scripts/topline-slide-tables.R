@@ -30,6 +30,7 @@ temp_rtf <- tempfile(fileext = ".rtf")
 system.file("extdata", "rt-dm-demo.rtf", package = "artful") |>
   read_file() |>
   rtf_indentation() |>
+  rtf_linebreaks() |>
   write_file(temp_rtf)
 
 one <- rtf_to_html(temp_rtf) |>
@@ -38,9 +39,6 @@ one <- rtf_to_html(temp_rtf) |>
   strip_pagination() |>
   strip_indentation() |>
   pivot_group()
-
-# Issue: group1_level big_n newline breaks in raw rtf are not being respected.
-# It should be "PBO N = 334", not "PBON = 334"
 
 # ---- rt-dm-basedz.rtf ----
 temp_rtf <- tempfile(fileext = ".rtf")
