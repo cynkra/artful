@@ -39,3 +39,4 @@ rtf_indentation("\\\\li576{ Seven spaces in total\\\\cell}")
 }
 
 }
+\keyword{internal}

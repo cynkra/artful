@@ -29,7 +29,7 @@
 #' rtf_indentation("\\li576{ Seven spaces in total\\cell}")
 #' }
 #'
-#' @export
+#' @keywords internal
 rtf_indentation <- function(string) {
   string |>
     stringr::str_replace_all("(\\{)( +)(.*?\\\\cell\\})", function(match) {
