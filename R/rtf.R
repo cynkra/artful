@@ -46,3 +46,19 @@ rtf_indentation <- function(string) {
     ) |>
     stringr::str_replace_all("\\\\pnhang", "&nbsp;&nbsp;")
 }
+
+#' Replace line breaks with spaces in RTF encoded strings
+#'
+#' Processes an RTF (Rich Text Format) encoded string by replacing line breaks,
+#' represented as "{\line}", with spaces. This ensures all content in a single
+#' cell is represented as a single character vector.
+#'
+#' @param string A character vector specifying the RTF encodings.
+#'
+#' @return A character string containing the processed RTF content with line
+#' breaks replaced by spaces.
+#'
+#' @keywords internal
+rtf_linebreaks <- function(string) {
+  stringr::str_replace_all(string, "\\{\\\\line\\}", " ")
+}
