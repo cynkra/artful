@@ -14,11 +14,11 @@ A data frame where pagination has been stripped.
 }
 \description{
 This function combines the functionality of \code{\link[=strip_empty_rows]{strip_empty_rows()}},
-\code{\link[=strip_header]{strip_header()}}, \code{\link[=strip_footer]{strip_footer()}}, \code{\link[=strip_repeat_colnames]{strip_repeat_colnames()}}, and
-\code{\link[=set_colnames]{set_colnames()}} into a single function. If fine grained control is not
-required to remove certain elements of a table, this function is preferred
-because the actions of stripping table elements are dependent on each other
-(e.g., to remove repeat column names, we first must identify these by
-stripping the header).
+\code{\link[=strip_empty_cols]{strip_empty_cols()}}, \code{\link[=strip_header]{strip_header()}}, \code{\link[=strip_footer]{strip_footer()}},
+\code{\link[=strip_repeat_colnames]{strip_repeat_colnames()}}, and \code{\link[=set_colnames]{set_colnames()}} into a single function. If
+fine grained control is not required to remove certain elements of a table,
+this function is preferred because the actions of stripping table elements
+are dependent on each other (e.g., to remove repeat column names, we first
+must identify these by stripping the header).
 }
 \keyword{internal}
