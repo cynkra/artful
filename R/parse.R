@@ -155,6 +155,7 @@ strip_empty_cols <- function(data) {
 #' @keywords internal
 strip_pagination <- function(data) {
   data <- strip_empty_rows(data)
+  data <- strip_empty_cols(data)
   header_last_row <- min(which(data[[2]] != "" | is.na(data))) - 1
   header <- slice(data, 1:header_last_row)
 
