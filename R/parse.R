@@ -175,19 +175,19 @@ strip_pagination <- function(data) {
     anti_join(footer) |>
     anti_join(colnames)
 
-  non_paginated <- bind_rows(colnames, table_cells)
+  non_repeating <- bind_rows(colnames, table_cells)
 
-  colnames <- slice(non_paginated, 1L) |> as.character()
+  colnames <- slice(non_repeating, 1L) |> as.character()
   colnames_missing_indices <- which(colnames == "")
 
   for (i in colnames_missing_indices) {
-    replacement <- filter(non_paginated, if_all(!i, ~ .x == "")) |>
+    replacement <- filter(non_repeating, if_all(!i, ~ .x == "")) |>
       slice(1L) |>
       pull(i)
     colnames[i] <- replacement
   }
 
-  non_paginated |>
+  non_repeating |>
     rename_with(~colnames) |>
     slice(-1L)
 }
