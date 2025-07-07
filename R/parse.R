@@ -267,8 +267,7 @@ strip_indentation <- function(data) {
         everything(),
         ~ str_replace_all(., fixed("&nbsp;"), "")
       )
-    ) |>
-    filter(!is.na(variable_level))
+    )
 }
 
 #' Pivot a grouping variable longer
