@@ -20,8 +20,6 @@ rtf_to_html <- function(file) {
     )
   }
 
-  message("Attempting conversion...")
-
   result <- system2(
     "pandoc",
     args = c("--from", "rtf", "--to", "html", shQuote(file)),
@@ -52,4 +50,25 @@ html_to_dataframe <- function(html) {
     rvest::minimal_html() |>
     rvest::html_element("table") |>
     rvest::html_table()
+}
+
+#' Convert an RTF Table into an ARD data frame
+#'
+#' This function converts a table in RTF format into a data frame in R,
+#' following the ARD standard. This is the top-level function of this package
+#' which acts as a glue to the lower-level functions.
+#'
+#' @param file A string, the path to the input .rtf file.
+#'
+#' @return an R data frame following the ARD standard.
+#'
+#' @export
+rtf_to_ard <- function(file) {
+  file |>
+    rtf_to_html() |>
+    html_to_dataframe() |>
+    strip_pagination() |>
+    separate_indentation() |>
+    pivot_group() |>
+    separate_bign()
 }
