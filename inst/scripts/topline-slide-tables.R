@@ -264,6 +264,71 @@ rt_ds_pretrt <- bind_rows(big_n, rt_ds_pretrt) |>
 print(rt_ds_pretrt)
 
 # rt-ds-trtwk16.rtf
+temp_rtf <- tempfile(fileext = ".rtf")
+
+system.file("extdata", "rt-ds-trtwk16.rtf", package = "artful") |>
+  read_file() |>
+  rtf_indentation() |>
+  write_file(temp_rtf)
+
+rt_ds_trtwk16 <- rtf_to_html(temp_rtf) |>
+  html_to_dataframe() |>
+  manage_exceptions() |>
+  strip_pagination() |>
+  strip_indentation() |>
+  pivot_group()
+
+# Parse stats
+rt_ds_trtwk16 <- rt_ds_trtwk16 |>
+  mutate(
+    .id = dplyr::row_number(),
+    stat_list = str_extract_all(stat, "[\\d.]+")
+  ) |>
+  mutate(
+    n_values = lengths(stat_list)
+  ) |>
+  unnest(stat_list) |>
+  mutate(
+    stat_name = case_when(
+      n_values > 1 & row_number() == 1 ~ "n",
+      n_values > 1 & row_number() == 2 ~ "p",
+      .default = NA
+    ),
+    stat = stat_list,
+    .by = .id
+  ) |>
+  select(
+    -c(.id, stat_list, n_values)
+  ) |>
+  mutate(stat_name = if_else(is.na(stat_name), "n", stat_name)) |>
+  left_join(stat_lookup)
+
+big_n <- rt_ds_trtwk16 |>
+  distinct(group1_level) |>
+  separate_wider_regex(
+    group1_level,
+    patterns = c(
+      variable_label1 = ".*?\\S+",
+      "\\s+",
+      "(?:\\(N = |N = )",
+      stat = "\\d+",
+      "\\)?"
+    )
+  ) |>
+  mutate(stat_name = "N_header", stat_label = "N", .before = "stat")
+
+rt_ds_trtwk16 <- rt_ds_trtwk16 |>
+  mutate(
+    group1_level = stringr::str_extract(
+      group1_level,
+      ".*?\\S+(?=\\s*(?:\\(N = |N = ))"
+    )
+  )
+
+rt_ds_trtwk16 <- bind_rows(big_n, rt_ds_trtwk16) |>
+  select(starts_with("group"), starts_with("variable"), starts_with("stat"))
+
+print(rt_ds_trtwk16)
 
 # ---- Slide 9 -----------------------------------------------------------------
 # rt-ef-acr20.rtf
