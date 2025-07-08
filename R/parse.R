@@ -178,7 +178,8 @@ strip_pagination <- function(data) {
   table_cells <- data |>
     anti_join(header) |>
     anti_join(footer) |>
-    anti_join(colnames)
+    anti_join(colnames) |>
+    suppressMessages()
 
   non_repeating <- bind_rows(colnames, table_cells)
 
