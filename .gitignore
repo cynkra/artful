@@ -50,6 +50,4 @@ rsconnect/
 .Rproj.user
 
 # Table examples provided by BMS
-inst/extdata/bms-*.rtf
-inst/extdata/rt-*.rtf
-inst/extdata/ard-shared-shell-*.csv
+inst/extdata/
