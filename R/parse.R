@@ -218,7 +218,9 @@ strip_pagination <- function(data) {
 strip_indentation <- function(data) {
   # Label indentation levels
   indents <- data |>
-    mutate(nbsp_count = stringr::str_count(data[[1]], fixed("&nbsp;"))) |>
+    mutate(
+      nbsp_count = stringr::str_count(data[[1]], stringr::fixed("&nbsp;"))
+    ) |>
     mutate(nbsp_group = cumsum(nbsp_count == 0)) |>
     mutate(
       counter = case_when(
@@ -265,7 +267,7 @@ strip_indentation <- function(data) {
     mutate(
       across(
         everything(),
-        ~ stringr::str_replace_all(., fixed("&nbsp;"), "")
+        ~ stringr::str_replace_all(., stringr::fixed("&nbsp;"), "")
       )
     )
 }
