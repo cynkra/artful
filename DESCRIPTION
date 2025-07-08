@@ -17,6 +17,8 @@ Imports:
     stringr,
     tidyr
 Suggests: 
-    roxyglobals
+    roxyglobals,
+    testthat (>= 3.0.0)
 Config/roxyglobals/filename: globals.R
 Config/roxyglobals/unique: FALSE
+Config/testthat/edition: 3
