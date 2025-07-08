@@ -64,11 +64,18 @@ html_to_dataframe <- function(html) {
 #'
 #' @export
 rtf_to_ard <- function(file) {
+  temp_rtf <- tempfile(fileext = ".rtf")
+
   file |>
-    rtf_to_html() |>
+    readr::read_file() |>
+    rtf_indentation() |>
+    rtf_linebreaks() |>
+    readr::write_file(temp_rtf)
+
+  rtf_to_html(temp_rtf) |>
     html_to_dataframe() |>
+    manage_exceptions() |>
     strip_pagination() |>
-    separate_indentation() |>
-    pivot_group() |>
-    separate_bign()
+    strip_indentation() |>
+    pivot_group()
 }
