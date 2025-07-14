@@ -10,5 +10,5 @@ set_stat_patterns(patterns)
 \item{patterns}{Named list of pattern definitions}
 }
 \description{
-Updates the global statistical patterns used for parsing.
+Set statistical patterns
 }

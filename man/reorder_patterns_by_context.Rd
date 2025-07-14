@@ -2,19 +2,18 @@
 % Please edit documentation in R/patterns.R
 \name{reorder_patterns_by_context}
 \alias{reorder_patterns_by_context}
-\title{Reorder patterns based on variable context for better pattern matching}
+\title{Reorder patterns based on context}
 \usage{
-reorder_patterns_by_context(patterns, variable_context)
+reorder_patterns_by_context(patterns, context_type)
 }
 \arguments{
-\item{patterns}{List of statistical patterns}
+\item{patterns}{List of patterns}
 
-\item{variable_context}{Variable name/label for context}
+\item{context_type}{Context type from detect_context_type()}
 }
 \value{
 Reordered patterns list
 }
 \description{
-Reorder patterns based on variable context for better pattern matching
+Reorder patterns based on context
 }
-\keyword{internal}
