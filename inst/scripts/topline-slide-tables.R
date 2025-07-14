@@ -1,5 +1,5 @@
 library(tidyverse)
-pkgload::load_all()
+library(artful)
 
 stat_lookup <- tribble(
   ~stat_name, ~stat_label,
@@ -29,20 +29,20 @@ stat_lookup <- tribble(
 
 # ---- Slide 7 -----------------------------------------------------------------
 # ---- rt-dm-demo.rtf ----
-temp_rtf <- tempfile(fileext = ".rtf")
+temp_rtf1 <- withr::local_tempfile(fileext = ".rtf")
 
 system.file("extdata", "rt-dm-demo.rtf", package = "artful") |>
   read_file() |>
-  rtf_indentation() |>
-  rtf_linebreaks() |>
-  write_file(temp_rtf)
+  artful:::rtf_indentation() |>
+  artful:::rtf_linebreaks() |>
+  write_file(temp_rtf1)
 
-rt_dm_demo <- rtf_to_html(temp_rtf) |>
-  html_to_dataframe() |>
-  manage_exceptions() |>
-  strip_pagination() |>
-  strip_indentation() |>
-  pivot_group()
+rt_dm_demo <- artful:::rtf_to_html(temp_rtf1) |>
+  artful:::html_to_dataframe() |>
+  artful:::manage_exceptions() |>
+  artful:::strip_pagination() |>
+  artful:::strip_indentation() |>
+  artful:::pivot_group()
 
 # Parse stats
 rt_dm_demo <- rt_dm_demo |>
@@ -64,7 +64,7 @@ rt_dm_demo <- rt_dm_demo |>
     )
   ) |>
   mutate(
-    .id = dplyr::row_number(),
+    .id = row_number(),
     stat_list = str_extract_all(stat, "[\\d.]+")
   ) |>
   mutate(
@@ -112,22 +112,20 @@ rt_dm_demo <- rt_dm_demo |>
 rt_dm_demo <- bind_rows(big_n, rt_dm_demo) |>
   select(starts_with("group"), starts_with("variable"), starts_with("stat"))
 
-prinf(rt_dm_demo)
-
 # ---- rt-dm-basedz.rtf ----
-temp_rtf <- tempfile(fileext = ".rtf")
+temp_rtf2 <- withr::local_tempfile(fileext = ".rtf")
 
 system.file("extdata", "rt-dm-basedz.rtf", package = "artful") |>
   read_file() |>
-  rtf_indentation() |>
-  write_file(temp_rtf)
+  artful:::rtf_indentation() |>
+  write_file(temp_rtf2)
 
-rt_dm_basedz <- rtf_to_html(temp_rtf) |>
-  html_to_dataframe() |>
-  manage_exceptions() |>
-  strip_pagination() |>
-  strip_indentation() |>
-  pivot_group()
+rt_dm_basedz <- artful:::rtf_to_html(temp_rtf2) |>
+  artful:::html_to_dataframe() |>
+  artful:::manage_exceptions() |>
+  artful:::strip_pagination() |>
+  artful:::strip_indentation() |>
+  artful:::pivot_group()
 
 # Parse stats
 rt_dm_basedz <- rt_dm_basedz |>
@@ -149,7 +147,7 @@ rt_dm_basedz <- rt_dm_basedz |>
     )
   ) |>
   mutate(
-    .id = dplyr::row_number(),
+    .id = row_number(),
     stat_list = str_extract_all(stat, "[\\d.]+")
   ) |>
   mutate(
@@ -200,28 +198,26 @@ rt_dm_basedz <- rt_dm_basedz |>
 rt_dm_basedz <- bind_rows(big_n, rt_dm_basedz) |>
   select(starts_with("group"), starts_with("variable"), starts_with("stat"))
 
-prinf(rt_dm_basedz)
-
 # ---- Slide 8 -----------------------------------------------------------------
 # rt-ds-pretrt.rtf
-temp_rtf <- tempfile(fileext = ".rtf")
+temp_rtf3 <- withr::local_tempfile(fileext = ".rtf")
 
 system.file("extdata", "rt-ds-pretrt.rtf", package = "artful") |>
   read_file() |>
-  rtf_indentation() |>
-  write_file(temp_rtf)
+  artful:::rtf_indentation() |>
+  write_file(temp_rtf3)
 
-rt_ds_pretrt <- rtf_to_html(temp_rtf) |>
-  html_to_dataframe() |>
-  manage_exceptions() |>
-  strip_pagination() |>
-  strip_indentation() |>
-  pivot_group()
+rt_ds_pretrt <- artful:::rtf_to_html(temp_rtf3) |>
+  artful:::html_to_dataframe() |>
+  artful:::manage_exceptions() |>
+  artful:::strip_pagination() |>
+  artful:::strip_indentation() |>
+  artful:::pivot_group()
 
 # Parse stats
 rt_ds_pretrt <- rt_ds_pretrt |>
   mutate(
-    .id = dplyr::row_number(),
+    .id = row_number(),
     stat_list = str_extract_all(stat, "[\\d.]+")
   ) |>
   mutate(
@@ -268,27 +264,25 @@ rt_ds_pretrt <- rt_ds_pretrt |>
 rt_ds_pretrt <- bind_rows(big_n, rt_ds_pretrt) |>
   select(starts_with("group"), starts_with("variable"), starts_with("stat"))
 
-prinf(rt_ds_pretrt)
-
 # rt-ds-trtwk16.rtf
-temp_rtf <- tempfile(fileext = ".rtf")
+temp_rtf4 <- withr::local_tempfile(fileext = ".rtf")
 
 system.file("extdata", "rt-ds-trtwk16.rtf", package = "artful") |>
   read_file() |>
-  rtf_indentation() |>
-  write_file(temp_rtf)
+  artful:::rtf_indentation() |>
+  write_file(temp_rtf4)
 
-rt_ds_trtwk16 <- rtf_to_html(temp_rtf) |>
-  html_to_dataframe() |>
-  manage_exceptions() |>
-  strip_pagination() |>
-  strip_indentation() |>
-  pivot_group()
+rt_ds_trtwk16 <- artful:::rtf_to_html(temp_rtf4) |>
+  artful:::html_to_dataframe() |>
+  artful:::manage_exceptions() |>
+  artful:::strip_pagination() |>
+  artful:::strip_indentation() |>
+  artful:::pivot_group()
 
 # Parse stats
 rt_ds_trtwk16 <- rt_ds_trtwk16 |>
   mutate(
-    .id = dplyr::row_number(),
+    .id = row_number(),
     stat_list = str_extract_all(stat, "[\\d.]+")
   ) |>
   mutate(
@@ -336,31 +330,29 @@ rt_ds_trtwk16 <- rt_ds_trtwk16 |>
 rt_ds_trtwk16 <- bind_rows(big_n, rt_ds_trtwk16) |>
   select(starts_with("group"), starts_with("variable"), starts_with("stat"))
 
-prinf(rt_ds_trtwk16)
-
 # ---- Slide 9 -----------------------------------------------------------------
 # rt-ef-acr20.rtf
-temp_rtf <- tempfile(fileext = ".rtf")
+temp_rtf5 <- withr::local_tempfile(fileext = ".rtf")
 
 system.file("extdata", "rt-ef-acr20.rtf", package = "artful") |>
   read_file() |>
-  rtf_indentation() |>
-  rtf_linebreaks() |>
-  write_file(temp_rtf)
+  artful:::rtf_indentation() |>
+  artful:::rtf_linebreaks() |>
+  write_file(temp_rtf5)
 
-rt_ef_acr20 <- rtf_to_html(temp_rtf) |>
-  html_to_dataframe() |>
-  manage_exceptions() |>
-  strip_pagination() |>
-  strip_indentation() |>
-  pivot_group()
+rt_ef_acr20 <- artful:::rtf_to_html(temp_rtf5) |>
+  artful:::html_to_dataframe() |>
+  artful:::manage_exceptions() |>
+  artful:::strip_pagination() |>
+  artful:::strip_indentation() |>
+  artful:::pivot_group()
 
 # Parse stats
 rt_ef_acr20 <- rt_ef_acr20 |>
   slice(-1:-2) |>
   mutate(stat = if_else(stat == "N.A.", NA, stat)) |>
   mutate(
-    .id = dplyr::row_number(),
+    .id = row_number(),
     stat_list = str_extract_all(stat, "[\\d.]+")
   ) |>
   mutate(
@@ -422,30 +414,28 @@ rt_ef_acr20 <- rt_ef_acr20 |>
 rt_ef_acr20 <- bind_rows(big_n, rt_ef_acr20) |>
   select(starts_with("group"), starts_with("variable"), starts_with("stat"))
 
-prinf(rt_ef_acr20)
-
 # rt-ef-aacr50.rtf
-temp_rtf <- tempfile(fileext = ".rtf")
+temp_rtf6 <- withr::local_tempfile(fileext = ".rtf")
 
 system.file("extdata", "rt-ef-aacr50.rtf", package = "artful") |>
   read_file() |>
-  rtf_indentation() |>
-  rtf_linebreaks() |>
-  write_file(temp_rtf)
+  artful:::rtf_indentation() |>
+  artful:::rtf_linebreaks() |>
+  write_file(temp_rtf6)
 
-rt_ef_aacr50 <- rtf_to_html(temp_rtf) |>
-  html_to_dataframe() |>
-  manage_exceptions() |>
-  strip_pagination() |>
-  strip_indentation() |>
-  pivot_group()
+rt_ef_aacr50 <- artful:::rtf_to_html(temp_rtf6) |>
+  artful:::html_to_dataframe() |>
+  artful:::manage_exceptions() |>
+  artful:::strip_pagination() |>
+  artful:::strip_indentation() |>
+  artful:::pivot_group()
 
 # Parse stats
 rt_ef_aacr50 <- rt_ef_aacr50 |>
   filter(variable_label1 != "TOTAL NUMBER OF SUBJECTS") |>
   mutate(stat = if_else(stat == "N.A.", NA, stat)) |>
   mutate(
-    .id = dplyr::row_number(),
+    .id = row_number(),
     stat_list = str_extract_all(stat, "[\\d.]+")
   ) |>
   mutate(
@@ -531,23 +521,21 @@ rt_ef_aacr50 <- rt_ef_aacr50 |>
 rt_ef_aacr50 <- bind_rows(big_n, rt_ef_aacr50) |>
   select(starts_with("group"), starts_with("variable"), starts_with("stat"))
 
-prinf(rt_ef_aacr50)
-
 # rt-ef-aacr70.rtf
-temp_rtf <- tempfile(fileext = ".rtf")
+temp_rtf7 <- withr::local_tempfile(fileext = ".rtf")
 
 system.file("extdata", "rt-ef-aacr70.rtf", package = "artful") |>
   read_file() |>
-  rtf_indentation() |>
-  rtf_linebreaks() |>
-  write_file(temp_rtf)
+  artful:::rtf_indentation() |>
+  artful:::rtf_linebreaks() |>
+  write_file(temp_rtf7)
 
-rt_ef_aacr70 <- rtf_to_html(temp_rtf) |>
-  html_to_dataframe() |>
-  manage_exceptions() |>
-  strip_pagination() |>
-  strip_indentation() |>
-  pivot_group()
+rt_ef_aacr70 <- artful:::rtf_to_html(temp_rtf7) |>
+  artful:::html_to_dataframe() |>
+  artful:::manage_exceptions() |>
+  artful:::strip_pagination() |>
+  artful:::strip_indentation() |>
+  artful:::pivot_group()
 
 # Parse stats
 rt_ef_aacr70 <- rt_ef_aacr70 |>
@@ -555,7 +543,7 @@ rt_ef_aacr70 <- rt_ef_aacr70 |>
   mutate(stat = if_else(stat == "N.A.", NA, stat)) |>
   filter(!str_detect(stat, "N.E.")) |>
   mutate(
-    .id = dplyr::row_number(),
+    .id = row_number(),
     stat_list = str_extract_all(stat, "[\\d.]+")
   ) |>
   mutate(
@@ -641,5 +629,3 @@ rt_ef_aacr70 <- rt_ef_aacr70 |>
 
 rt_ef_aacr70 <- bind_rows(big_n, rt_ef_aacr70) |>
   select(starts_with("group"), starts_with("variable"), starts_with("stat"))
-
-prinf(rt_ef_aacr70)
