@@ -9,9 +9,11 @@ parse_stat_value(stat_value, variable_context = NULL, patterns = NULL)
 \arguments{
 \item{stat_value}{Character string containing the statistic to parse}
 
-\item{variable_context}{Variable name/label for context-based pattern selection}
+\item{variable_context}{Variable name/label for context-based pattern
+selection}
 
-\item{patterns}{Optional list of patterns to use (defaults to built-in patterns)}
+\item{patterns}{Optional list of patterns to use (defaults to built-in
+patterns)}
 }
 \value{
 Tibble with parsed statistics

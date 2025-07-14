@@ -78,29 +78,6 @@ get_context_priorities <- function() {
 }
 
 # ==============================================================================
-# PATTERN MANAGEMENT
-# ==============================================================================
-
-#' Get statistical patterns
-#' @return Named list of pattern definitions
-#' @export
-get_stat_patterns <- function() {
-  get_default_patterns()
-}
-
-#' Set statistical patterns
-#' @param patterns Named list of pattern definitions
-#' @export
-set_stat_patterns <- function(patterns) {
-  # If you need to customize patterns, pass them directly to parse_stat_value()
-  # This function exists for API compatibility but doesn't store state
-  warning(
-    "set_stat_patterns() doesn't persist patterns. Pass custom patterns directly to parse_stat_value()"
-  )
-  invisible(patterns)
-}
-
-# ==============================================================================
 # CONTEXT DETECTION
 # ==============================================================================
 
@@ -256,12 +233,12 @@ create_missing_result <- function(stat_value) {
 # ==============================================================================
 
 #' Parse statistical value with context awareness
-#'
 #' @param stat_value Character string containing the statistic to parse
-#' @param variable_context Variable name/label for context-based pattern selection
-#' @param patterns Optional list of patterns to use (defaults to built-in patterns)
+#' @param variable_context Variable name/label for context-based pattern
+#' selection
+#' @param patterns Optional list of patterns to use (defaults to built-in
+#' patterns)
 #' @return Tibble with parsed statistics
-#' @export
 #' @examples
 #' \dontrun{
 #' parse_stat_value("24")
