@@ -32,19 +32,19 @@
 #' @keywords internal
 rtf_indentation <- function(string) {
   string |>
-    stringr::str_replace_all("(\\{)( +)(.*?\\\\cell\\})", function(match) {
-      groups <- stringr::str_match(match, "(\\{)( +)(.*?\\\\cell\\})")
+    str_replace_all("(\\{)( +)(.*?\\\\cell\\})", function(match) {
+      groups <- str_match(match, "(\\{)( +)(.*?\\\\cell\\})")
       space_count <- nchar(groups[, 3])
       nbsp_replacement <- paste(rep("&nbsp;", space_count), collapse = "")
       paste0(groups[, 2], nbsp_replacement, groups[, 4])
     }) |>
-    stringr::str_replace_all("\\\\li192", "&nbsp;&nbsp;") |>
-    stringr::str_replace_all("\\\\li384", "&nbsp;&nbsp;&nbsp;&nbsp;") |>
-    stringr::str_replace_all(
+    str_replace_all("\\\\li192", "&nbsp;&nbsp;") |>
+    str_replace_all("\\\\li384", "&nbsp;&nbsp;&nbsp;&nbsp;") |>
+    str_replace_all(
       "\\\\li576",
       "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
     ) |>
-    stringr::str_replace_all("\\\\pnhang", "&nbsp;&nbsp;")
+    str_replace_all("\\\\pnhang", "&nbsp;&nbsp;")
 }
 
 #' Replace line breaks with spaces in RTF encoded strings
@@ -60,5 +60,5 @@ rtf_indentation <- function(string) {
 #'
 #' @keywords internal
 rtf_linebreaks <- function(string) {
-  stringr::str_replace_all(string, "\\{\\\\line\\}", " ")
+  str_replace_all(string, "\\{\\\\line\\}", " ")
 }

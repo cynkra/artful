@@ -220,7 +220,7 @@ strip_indentation <- function(data) {
   # Label indentation levels
   indents <- data |>
     mutate(
-      nbsp_count = stringr::str_count(data[[1]], stringr::fixed("&nbsp;"))
+      nbsp_count = str_count(data[[1]], fixed("&nbsp;"))
     ) |>
     mutate(nbsp_group = cumsum(nbsp_count == 0)) |>
     mutate(
@@ -268,7 +268,7 @@ strip_indentation <- function(data) {
     mutate(
       across(
         everything(),
-        ~ stringr::str_replace_all(., stringr::fixed("&nbsp;"), "")
+        ~ str_replace_all(., fixed("&nbsp;"), "")
       )
     )
 }
@@ -324,7 +324,7 @@ separate_bign <- function(data) {
 
   data <- data |>
     mutate(
-      group1_level = stringr::str_extract(
+      group1_level = str_extract(
         group1_level,
         ".*?\\S+(?=\\s*(?:\\(N = |N = ))"
       )
