@@ -28,7 +28,7 @@ stat_lookup <- tribble(
 )
 
 # ---- Slide 7 -----------------------------------------------------------------
-# ---- rt-dm-demo.rtf ----
+# rt-dm-demo.rtf
 temp_rtf1 <- withr::local_tempfile(fileext = ".rtf")
 
 system.file("extdata", "rt-dm-demo.rtf", package = "artful") |>
@@ -112,7 +112,7 @@ rt_dm_demo <- rt_dm_demo |>
 rt_dm_demo <- bind_rows(big_n, rt_dm_demo) |>
   select(starts_with("group"), starts_with("variable"), starts_with("stat"))
 
-# ---- rt-dm-basedz.rtf ----
+# rt-dm-basedz.rtf
 temp_rtf2 <- withr::local_tempfile(fileext = ".rtf")
 
 system.file("extdata", "rt-dm-basedz.rtf", package = "artful") |>
