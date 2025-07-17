@@ -1,6 +1,7 @@
 library(tidyverse)
 library(artful)
 pkgload::load_all()
+# options(tibble.print_max = Inf)
 
 stat_lookup <- tribble(
   ~stat_name, ~stat_label,
@@ -269,7 +270,6 @@ rt_ds_pretrt <- function() {
   bind_rows(big_n, ard) |>
     select(starts_with("group"), starts_with("variable"), starts_with("stat"))
 }
-
 
 # ---- rt-ds-trtwk16.rtf ----
 rt_ds_trtwk16 <- function() {
@@ -1323,20 +1323,469 @@ rt_ef_cfbsvdh <- function() {
 # ---- Slide 13 ----------------------------------------------------------------
 
 # ---- rt-ef-cfbhaq ----
+rt_ef_cfbhaq <- function() {
+  temp_rtf <- withr::local_tempfile(fileext = ".rtf")
+
+  system.file("extdata", "examples", "rt-ef-cfbhaq.rtf", package = "artful") |>
+    read_file() |>
+    artful:::rtf_indentation() |>
+    artful:::rtf_linebreaks() |>
+    write_file(temp_rtf)
+
+  ard_ish <- artful:::rtf_to_html(temp_rtf) |>
+    artful:::html_to_dataframe() |>
+    artful:::manage_exceptions() |>
+    artful:::strip_pagination() |>
+    artful:::strip_indentation() |>
+    artful:::pivot_group()
+
+  ard_ish_parsed <- ard_ish |>
+    mutate(stat = if_else(stat == "N.A.", NA, stat)) |>
+    mutate(
+      .id = row_number(),
+      stat_list = str_extract_all(stat, "[\\d.]+")
+    ) |>
+    mutate(
+      n_values = lengths(stat_list)
+    ) |>
+    unnest(stat_list) |>
+    filter(!is.na(stat)) |>
+    mutate(
+      stat_name = case_when(
+        variable_level == "MEAN (SD)" &
+          n_values == 2 &
+          row_number() == 1 ~
+          "mean",
+        variable_level == "MEAN (SD)" &
+          n_values == 2 &
+          row_number() == 2 ~
+          "sd",
+        variable_level == "MIN, MAX" &
+          n_values == 2 &
+          row_number() == 1 ~
+          "min",
+        variable_level == "MIN, MAX" &
+          n_values == 2 &
+          row_number() == 2 ~
+          "max",
+        variable_level == "ADJUSTED MEAN DIFFERENCE (SE)" &
+          n_values == 2 &
+          row_number() == 1 ~
+          "mean",
+        variable_level == "ADJUSTED MEAN DIFFERENCE (SE)" &
+          n_values == 2 &
+          row_number() == 2 ~
+          "se",
+        variable_label1 == "ADJUSTED MEAN CHANGES(SE)" &
+          n_values == 2 &
+          row_number() == 1 ~
+          "mean",
+        variable_label1 == "ADJUSTED MEAN CHANGES(SE)" &
+          n_values == 2 &
+          row_number() == 2 ~
+          "se",
+        variable_level == "95% CONFIDENCE INTERVAL FOR DIFFERENCE" &
+          n_values == 2 &
+          row_number() == 1 ~
+          "ci_low",
+        variable_level == "95% CONFIDENCE INTERVAL FOR DIFFERENCE" &
+          n_values == 2 &
+          row_number() == 2 ~
+          "ci_high",
+        variable_label1 == "95% CONFIDENCE INTERVAL FOR MEAN" &
+          n_values == 2 &
+          row_number() == 1 ~
+          "ci_low",
+        variable_label1 == "95% CONFIDENCE INTERVAL FOR MEAN" &
+          n_values == 2 &
+          row_number() == 2 ~
+          "ci_high",
+        variable_level == "N1" ~ "n",
+        variable_level == "MEDIAN" ~ "median",
+        variable_level == "P VALUE" ~ "p_value"
+      ),
+      stat = stat_list,
+      .by = .id
+    ) |>
+    select(
+      -c(.id, stat_list, n_values)
+    ) |>
+    left_join(stat_lookup)
+
+  big_n <- ard_ish_parsed |>
+    distinct(group1_level) |>
+    separate_wider_regex(
+      group1_level,
+      patterns = c(
+        variable_label1 = ".*?\\S+",
+        "\\s+",
+        "(?:\\(N = |N = )",
+        stat = "\\d+",
+        "\\)?"
+      )
+    ) |>
+    mutate(stat_name = "N_header", stat_label = "N", .before = "stat")
+
+  ard <- ard_ish_parsed |>
+    mutate(
+      group1_level = stringr::str_extract(
+        group1_level,
+        ".*?\\S+(?=\\s*(?:\\(N = |N = ))"
+      )
+    )
+
+  bind_rows(big_n, ard) |>
+    select(starts_with("group"), starts_with("variable"), starts_with("stat"))
+}
 
 # ---- rt-ef-cfbsf36 ----
+# RTF NOT SUPPLIED
 
 # ---- rt-ef-cfbfaci ----
+# RTF NOT SUPPLIED
 
 # ---- Slide 14 ----------------------------------------------------------------
 
 # ---- rt-ae-ae1 ----
+rt_ae_ae1 <- function() {
+  temp_rtf <- withr::local_tempfile(fileext = ".rtf")
+
+  system.file("extdata", "examples", "rt-ae-ae1.rtf", package = "artful") |>
+    read_file() |>
+    artful:::rtf_indentation() |>
+    artful:::rtf_linebreaks() |>
+    write_file(temp_rtf)
+
+  ard_ish <- artful:::rtf_to_html(temp_rtf) |>
+    artful:::html_to_dataframe() |>
+    artful:::manage_exceptions() |>
+    artful:::strip_pagination() |>
+    artful:::strip_indentation() |>
+    artful:::pivot_group()
+
+  ard_ish_parsed <- ard_ish |>
+    mutate(
+      .id = row_number(),
+      stat_list = str_extract_all(stat, "[\\d.]+")
+    ) |>
+    mutate(
+      n_values = lengths(stat_list)
+    ) |>
+    unnest(stat_list) |>
+    mutate(
+      stat_name = case_when(
+        variable_level != "DEATHs" &
+          n_values > 1 &
+          row_number() == 1 ~
+          "n",
+        variable_level != "DEATHs" &
+          n_values > 1 &
+          row_number() == 2 ~
+          "p",
+        .default = "n"
+      ),
+      stat = stat_list,
+      .by = .id
+    ) |>
+    select(
+      -c(.id, stat_list, n_values)
+    ) |>
+    left_join(stat_lookup)
+
+  big_n <- ard_ish_parsed |>
+    distinct(group1_level) |>
+    separate_wider_regex(
+      group1_level,
+      patterns = c(
+        variable_label1 = ".*?\\S+",
+        "\\s+",
+        "(?:\\(N = |N = )",
+        stat = "\\d+",
+        "\\)?"
+      )
+    ) |>
+    mutate(stat_name = "N_header", stat_label = "N", .before = "stat")
+
+  ard <- ard_ish_parsed |>
+    mutate(
+      group1_level = stringr::str_extract(
+        group1_level,
+        ".*?\\S+(?=\\s*(?:\\(N = |N = ))"
+      )
+    )
+
+  bind_rows(big_n, ard) |>
+    select(starts_with("group"), starts_with("variable"), starts_with("stat"))
+}
 
 # ---- Slide 15 ----------------------------------------------------------------
 
 # ---- rt-ae-aesoc1 ----
+rt_ae_aesoc1 <- function() {
+  temp_rtf <- withr::local_tempfile(fileext = ".rtf")
 
-# ---- List of ARDs --------------------------------------------------------
+  system.file("extdata", "examples", "rt-ae-aesoc1.rtf", package = "artful") |>
+    read_file() |>
+    artful:::rtf_indentation() |>
+    artful:::rtf_linebreaks() |>
+    write_file(temp_rtf)
+
+  ard_ish <- artful:::rtf_to_html(temp_rtf) |>
+    artful:::html_to_dataframe() |>
+    artful:::manage_exceptions() |>
+    artful:::strip_pagination() |>
+    artful:::strip_indentation() |>
+    artful:::pivot_group()
+
+  ard_ish_parsed <- ard_ish |>
+    mutate(
+      .id = row_number(),
+      stat_list = str_extract_all(stat, "[\\d.]+")
+    ) |>
+    mutate(
+      n_values = lengths(stat_list)
+    ) |>
+    unnest(stat_list) |>
+    mutate(
+      stat_name = case_when(
+        stat != "0" &
+          n_values > 1 &
+          row_number() == 1 ~
+          "n",
+        variable_level != "DEATHs" &
+          n_values > 1 &
+          row_number() == 2 ~
+          "p",
+        .default = "n"
+      ),
+      stat = stat_list,
+      .by = .id
+    ) |>
+    select(
+      -c(.id, stat_list, n_values)
+    ) |>
+    left_join(stat_lookup)
+
+  big_n <- ard_ish_parsed |>
+    distinct(group1_level) |>
+    separate_wider_regex(
+      group1_level,
+      patterns = c(
+        variable_label1 = ".*?\\S+",
+        "\\s+",
+        "(?:\\(N = |N = )",
+        stat = "\\d+",
+        "\\)?"
+      )
+    ) |>
+    mutate(stat_name = "N_header", stat_label = "N", .before = "stat")
+
+  ard <- ard_ish_parsed |>
+    mutate(
+      group1_level = stringr::str_extract(
+        group1_level,
+        ".*?\\S+(?=\\s*(?:\\(N = |N = ))"
+      )
+    )
+
+  bind_rows(big_n, ard) |>
+    select(starts_with("group"), starts_with("variable"), starts_with("stat"))
+}
+
+# ---- Slide 16 & 17 -----------------------------------------------------------
+
+# ---- rt-ae-saesoc1 ----
+rt_ae_saesoc1 <- function() {
+  temp_rtf <- withr::local_tempfile(fileext = ".rtf")
+
+  system.file("extdata", "examples", "rt-ae-saesoc1.rtf", package = "artful") |>
+    read_file() |>
+    artful:::rtf_indentation() |>
+    artful:::rtf_linebreaks() |>
+    write_file(temp_rtf)
+
+  ard_ish <- artful:::rtf_to_html(temp_rtf) |>
+    artful:::html_to_dataframe() |>
+    artful:::manage_exceptions() |>
+    artful:::strip_pagination() |>
+    artful:::strip_indentation() |>
+    artful:::pivot_group()
+
+  ard_ish_parsed <- ard_ish |>
+    mutate(stat = if_else(stat == "N.A.", NA, stat)) |>
+    mutate(
+      .id = row_number(),
+      stat_list = str_extract_all(stat, "[\\d.]+")
+    ) |>
+    mutate(
+      n_values = lengths(stat_list)
+    ) |>
+    unnest(stat_list) |>
+    filter(!is.na(stat)) |>
+    mutate(
+      stat_name = case_when(
+        variable_level == "RATE DIFFERENCE VS PLACEBO (95% CI)" &
+          n_values == 3 &
+          row_number() == 1 ~
+          "estimate",
+        variable_level == "RATE DIFFERENCE VS PLACEBO (95% CI)" &
+          n_values == 3 &
+          row_number() == 2 ~
+          "ci_low",
+        variable_level == "RATE DIFFERENCE VS PLACEBO (95% CI)" &
+          n_values == 3 &
+          row_number() == 3 ~
+          "ci_high",
+        stat != "0" &
+          n_values > 1 &
+          row_number() == 1 ~
+          "n",
+        variable_level != "DEATHs" &
+          n_values > 1 &
+          row_number() == 2 ~
+          "p",
+        .default = "n"
+      ),
+      stat = stat_list,
+      .by = .id
+    ) |>
+    select(
+      -c(.id, stat_list, n_values)
+    ) |>
+    left_join(stat_lookup)
+
+  big_n <- ard_ish_parsed |>
+    distinct(group1_level) |>
+    separate_wider_regex(
+      group1_level,
+      patterns = c(
+        variable_label1 = ".*?\\S+",
+        "\\s+",
+        "(?:\\(N = |N = )",
+        stat = "\\d+",
+        "\\)?"
+      )
+    ) |>
+    mutate(stat_name = "N_header", stat_label = "N", .before = "stat")
+
+  ard <- ard_ish_parsed |>
+    mutate(
+      group1_level = stringr::str_extract(
+        group1_level,
+        ".*?\\S+(?=\\s*(?:\\(N = |N = ))"
+      )
+    )
+
+  bind_rows(big_n, ard) |>
+    select(starts_with("group"), starts_with("variable"), starts_with("stat"))
+}
+
+# ---- Slide 18 ----------------------------------------------------------------
+
+# RTF UNIDENTIFIED IN PRESENTER NOTES
+
+# ---- Slide 19 ----------------------------------------------------------------
+
+# ---- rt-ae-aedissoc1 ----
+rt_ae_aedissoc1 <- function() {
+  temp_rtf <- withr::local_tempfile(fileext = ".rtf")
+
+  system.file(
+    "extdata",
+    "examples",
+    "rt-ae-aedissoc1.rtf",
+    package = "artful"
+  ) |>
+    read_file() |>
+    artful:::rtf_indentation() |>
+    artful:::rtf_linebreaks() |>
+    write_file(temp_rtf)
+
+  ard_ish <- artful:::rtf_to_html(temp_rtf) |>
+    artful:::html_to_dataframe() |>
+    artful:::manage_exceptions() |>
+    artful:::strip_pagination() |>
+    artful:::strip_indentation() |>
+    artful:::pivot_group()
+
+  ard_ish_parsed <- ard_ish |>
+    mutate(stat = if_else(stat == "N.A.", NA, stat)) |>
+    mutate(
+      .id = row_number(),
+      stat_list = str_extract_all(stat, "[\\d.]+")
+    ) |>
+    mutate(
+      n_values = lengths(stat_list)
+    ) |>
+    unnest(stat_list) |>
+    filter(!is.na(stat)) |>
+    mutate(
+      stat_name = case_when(
+        variable_level == "RATE DIFFERENCE VS PLACEBO (95% CI)" &
+          n_values == 3 &
+          row_number() == 1 ~
+          "estimate",
+        variable_level == "RATE DIFFERENCE VS PLACEBO (95% CI)" &
+          n_values == 3 &
+          row_number() == 2 ~
+          "ci_low",
+        variable_level == "RATE DIFFERENCE VS PLACEBO (95% CI)" &
+          n_values == 3 &
+          row_number() == 3 ~
+          "ci_high",
+        stat != "0" &
+          n_values > 1 &
+          row_number() == 1 ~
+          "n",
+        variable_level != "DEATHs" &
+          n_values > 1 &
+          row_number() == 2 ~
+          "p",
+        .default = "n"
+      ),
+      stat = stat_list,
+      .by = .id
+    ) |>
+    select(
+      -c(.id, stat_list, n_values)
+    ) |>
+    left_join(stat_lookup)
+
+  big_n <- ard_ish_parsed |>
+    distinct(group1_level) |>
+    separate_wider_regex(
+      group1_level,
+      patterns = c(
+        variable_label1 = ".*?\\S+",
+        "\\s+",
+        "(?:\\(N = |N = )",
+        stat = "\\d+",
+        "\\)?"
+      )
+    ) |>
+    mutate(stat_name = "N_header", stat_label = "N", .before = "stat")
+
+  ard <- ard_ish_parsed |>
+    mutate(
+      group1_level = stringr::str_extract(
+        group1_level,
+        ".*?\\S+(?=\\s*(?:\\(N = |N = ))"
+      )
+    )
+
+  bind_rows(big_n, ard) |>
+    select(starts_with("group"), starts_with("variable"), starts_with("stat"))
+}
+
+# ---- Slide 20 ----------------------------------------------------------------
+
+# RTF UNIDENTIFIED IN PRESENTER NOTES
+
+# ---- Slide 21 ----------------------------------------------------------------
+
+# RTF UNIDENTIFIED IN PRESENTER NOTES
+
+# ---- List of ARDs ------------------------------------------------------------
 rt_dm_demo()
 rt_dm_basedz()
 rt_ds_pretrt()
@@ -1350,3 +1799,7 @@ rt_ef_dact()
 rt_ef_mda()
 rt_ef_cfbdas()
 rt_ef_cfbsvdh()
+rt_ef_cfbhaq()
+rt_ae_ae1()
+rt_ae_aesoc1()
+rt_ae_aedissoc1()
