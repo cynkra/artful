@@ -1,5 +1,6 @@
 library(tidyverse)
 library(artful)
+pkgload::load_all()
 
 stat_lookup <- tribble(
   ~stat_name, ~stat_label,
@@ -628,4 +629,673 @@ rt_ef_aacr70 <- rt_ef_aacr70 |>
   )
 
 rt_ef_aacr70 <- bind_rows(big_n, rt_ef_aacr70) |>
+  select(starts_with("group"), starts_with("variable"), starts_with("stat"))
+
+# ---- Slide 10 ----------------------------------------------------------------
+# rt-ef-pasi
+temp_rtf8 <- withr::local_tempfile(fileext = ".rtf")
+
+system.file("extdata", "examples", "rt-ef-pasi.rtf", package = "artful") |>
+  read_file() |>
+  artful:::rtf_indentation() |>
+  artful:::rtf_linebreaks() |>
+  write_file(temp_rtf8)
+
+rt_ef_pasi <- artful:::rtf_to_html(temp_rtf8) |>
+  artful:::html_to_dataframe() |>
+  artful:::manage_exceptions() |>
+  artful:::strip_pagination() |>
+  artful:::strip_indentation() |>
+  artful:::pivot_group()
+
+# Parse stats
+rt_ef_pasi <- rt_ef_pasi |>
+  mutate(stat = if_else(stat == "N.A.", NA, stat)) |>
+  mutate(
+    .id = row_number(),
+    stat_list = str_extract_all(stat, "[\\d.]+")
+  ) |>
+  mutate(
+    n_values = lengths(stat_list)
+  ) |>
+  unnest(stat_list) |>
+  mutate(
+    stat_name = case_when(
+      str_detect(variable_level, "n \\(%\\)$") &
+        n_values > 1 &
+        row_number() == 1 ~
+        "n",
+      str_detect(variable_level, "n \\(%\\)$") &
+        n_values > 1 &
+        row_number() == 2 ~
+        "p",
+      str_detect(variable_label1, "n \\(%\\)$") &
+        n_values > 1 &
+        row_number() == 1 ~
+        "n",
+      str_detect(variable_label1, "n \\(%\\)$") &
+        n_values > 1 &
+        row_number() == 2 ~
+        "p",
+      str_detect(variable_level, "\\(95% CI\\)") &
+        n_values > 1 &
+        row_number() == 1 ~
+        "ci_low",
+      str_detect(variable_level, "\\(95% CI\\)") &
+        n_values > 1 &
+        row_number() == 2 ~
+        "ci_high",
+      variable_level == "TOTAL NUMBER OF SUBJECTS" ~ "n",
+      variable_label1 == "RESPONSE RATE (%)" ~ "p",
+      variable_label1 == "DIFFERENCE VS PLACEBO (%)" ~ "p",
+      variable_level == "P-VALUE" & !is.na(stat) ~ "p_value",
+      variable_level == "NON RESPONDERS DUE TO MISSING DATA n (%)" &
+        variable_label1 == "RESPONSE RATE (%)" ~
+        "p",
+      variable_label1 == "RESPONDERS n (%)" & stat == "0" ~ "n",
+      .default = NA
+    ),
+    stat = stat_list,
+    .by = .id
+  ) |>
+  select(
+    -c(.id, stat_list, n_values)
+  ) |>
+  left_join(stat_lookup) |>
+  filter(!is.na(stat)) |>
+  mutate(
+    stat_name = if_else(
+      is.na(variable_level) & variable_label1 == "ODDS RATIO VS PLACEBO",
+      "odds_ratio",
+      stat_name
+    ),
+    stat_label = if_else(
+      is.na(variable_level) & variable_label1 == "ODDS RATIO VS PLACEBO",
+      "Odds Ratio",
+      stat_label
+    )
+  )
+
+big_n <- rt_ef_pasi |>
+  distinct(group1_level) |>
+  separate_wider_regex(
+    group1_level,
+    patterns = c(
+      variable_label1 = ".*?\\S+",
+      "\\s+",
+      "(?:\\(N = |N = )",
+      stat = "\\d+",
+      "\\)?"
+    )
+  ) |>
+  mutate(stat_name = "N_header", stat_label = "N", .before = "stat")
+
+rt_ef_pasi <- rt_ef_pasi |>
+  mutate(
+    group1_level = stringr::str_extract(
+      group1_level,
+      ".*?\\S+(?=\\s*(?:\\(N = |N = ))"
+    )
+  )
+
+rt_ef_pasi <- bind_rows(big_n, rt_ef_pasi) |>
+  select(starts_with("group"), starts_with("variable"), starts_with("stat"))
+
+# rt-ef-enth
+temp_rtf9 <- withr::local_tempfile(fileext = ".rtf")
+
+system.file("extdata", "examples", "rt-ef-enth.rtf", package = "artful") |>
+  read_file() |>
+  artful:::rtf_indentation() |>
+  artful:::rtf_linebreaks() |>
+  write_file(temp_rtf9)
+
+rt_ef_enth <- artful:::rtf_to_html(temp_rtf9) |>
+  artful:::html_to_dataframe() |>
+  artful:::manage_exceptions() |>
+  artful:::strip_pagination() |>
+  artful:::strip_indentation() |>
+  artful:::pivot_group()
+
+# Parse stats
+rt_ef_enth <- rt_ef_enth |>
+  mutate(stat = if_else(stat == "N.A.", NA, stat)) |>
+  mutate(
+    .id = row_number(),
+    stat_list = str_extract_all(stat, "[\\d.]+")
+  ) |>
+  mutate(
+    n_values = lengths(stat_list)
+  ) |>
+  unnest(stat_list) |>
+  mutate(
+    stat_name = case_when(
+      str_detect(variable_level, "n \\(%\\)$") &
+        n_values > 1 &
+        row_number() == 1 ~
+        "n",
+      str_detect(variable_level, "n \\(%\\)$") &
+        n_values > 1 &
+        row_number() == 2 ~
+        "p",
+      str_detect(variable_label1, "n \\(%\\)$") &
+        n_values > 1 &
+        row_number() == 1 ~
+        "n",
+      str_detect(variable_label1, "n \\(%\\)$") &
+        n_values > 1 &
+        row_number() == 2 ~
+        "p",
+      str_detect(variable_level, "\\(95% CI\\)") &
+        n_values > 1 &
+        row_number() == 1 ~
+        "ci_low",
+      str_detect(variable_level, "\\(95% CI\\)") &
+        n_values > 1 &
+        row_number() == 2 ~
+        "ci_high",
+      variable_level == "TOTAL NUMBER OF SUBJECTS" ~ "n",
+      variable_label1 == "RESPONSE RATE (%)" ~ "p",
+      variable_label1 == "DIFFERENCE VS PLACEBO (%)" ~ "p",
+      variable_level == "P-VALUE" & !is.na(stat) ~ "p_value",
+      variable_level == "NON RESPONDERS DUE TO MISSING DATA n (%)" &
+        variable_label1 == "RESPONSE RATE (%)" ~
+        "p",
+      variable_label1 == "RESPONDERS n (%)" & stat == "0" ~ "n",
+      .default = NA
+    ),
+    stat = stat_list,
+    .by = .id
+  ) |>
+  select(
+    -c(.id, stat_list, n_values)
+  ) |>
+  left_join(stat_lookup) |>
+  filter(!is.na(stat)) |>
+  mutate(
+    stat_name = if_else(
+      is.na(variable_level) & variable_label1 == "ODDS RATIO VS PLACEBO",
+      "odds_ratio",
+      stat_name
+    ),
+    stat_label = if_else(
+      is.na(variable_level) & variable_label1 == "ODDS RATIO VS PLACEBO",
+      "Odds Ratio",
+      stat_label
+    )
+  )
+
+big_n <- rt_ef_enth |>
+  distinct(group1_level) |>
+  separate_wider_regex(
+    group1_level,
+    patterns = c(
+      variable_label1 = ".*?\\S+",
+      "\\s+",
+      "(?:\\(N = |N = )",
+      stat = "\\d+",
+      "\\)?"
+    )
+  ) |>
+  mutate(stat_name = "N_header", stat_label = "N", .before = "stat")
+
+rt_ef_enth <- rt_ef_enth |>
+  mutate(
+    group1_level = stringr::str_extract(
+      group1_level,
+      ".*?\\S+(?=\\s*(?:\\(N = |N = ))"
+    )
+  )
+
+rt_ef_enth <- bind_rows(big_n, rt_ef_enth) |>
+  select(starts_with("group"), starts_with("variable"), starts_with("stat"))
+
+# rt-ef-dact
+temp_rtf10 <- withr::local_tempfile(fileext = ".rtf")
+
+system.file("extdata", "examples", "rt-ef-dact.rtf", package = "artful") |>
+  read_file() |>
+  artful:::rtf_indentation() |>
+  artful:::rtf_linebreaks() |>
+  write_file(temp_rtf10)
+
+rt_ef_dact <- artful:::rtf_to_html(temp_rtf10) |>
+  artful:::html_to_dataframe() |>
+  artful:::manage_exceptions() |>
+  artful:::strip_pagination() |>
+  artful:::strip_indentation() |>
+  artful:::pivot_group()
+
+# Parse stats
+rt_ef_dact <- rt_ef_dact |>
+  mutate(stat = if_else(stat == "N.A.", NA, stat)) |>
+  mutate(
+    .id = row_number(),
+    stat_list = str_extract_all(stat, "[\\d.]+")
+  ) |>
+  mutate(
+    n_values = lengths(stat_list)
+  ) |>
+  unnest(stat_list) |>
+  mutate(
+    stat_name = case_when(
+      str_detect(variable_level, "n \\(%\\)$") &
+        n_values > 1 &
+        row_number() == 1 ~
+        "n",
+      str_detect(variable_level, "n \\(%\\)$") &
+        n_values > 1 &
+        row_number() == 2 ~
+        "p",
+      str_detect(variable_label1, "n \\(%\\)$") &
+        n_values > 1 &
+        row_number() == 1 ~
+        "n",
+      str_detect(variable_label1, "n \\(%\\)$") &
+        n_values > 1 &
+        row_number() == 2 ~
+        "p",
+      str_detect(variable_level, "\\(95% CI\\)") &
+        n_values > 1 &
+        row_number() == 1 ~
+        "ci_low",
+      str_detect(variable_level, "\\(95% CI\\)") &
+        n_values > 1 &
+        row_number() == 2 ~
+        "ci_high",
+      variable_level == "TOTAL NUMBER OF SUBJECTS" ~ "n",
+      variable_label1 == "RESPONSE RATE (%)" ~ "p",
+      variable_label1 == "DIFFERENCE VS PLACEBO (%)" ~ "p",
+      variable_level == "P-VALUE" & !is.na(stat) ~ "p_value",
+      variable_level == "NON RESPONDERS DUE TO MISSING DATA n (%)" &
+        variable_label1 == "RESPONSE RATE (%)" ~
+        "p",
+      variable_label1 == "RESPONDERS n (%)" & stat == "0" ~ "n",
+      .default = NA
+    ),
+    stat = stat_list,
+    .by = .id
+  ) |>
+  select(
+    -c(.id, stat_list, n_values)
+  ) |>
+  left_join(stat_lookup) |>
+  filter(!is.na(stat)) |>
+  mutate(
+    stat_name = if_else(
+      is.na(variable_level) & variable_label1 == "ODDS RATIO VS PLACEBO",
+      "odds_ratio",
+      stat_name
+    ),
+    stat_label = if_else(
+      is.na(variable_level) & variable_label1 == "ODDS RATIO VS PLACEBO",
+      "Odds Ratio",
+      stat_label
+    )
+  )
+
+big_n <- rt_ef_dact |>
+  distinct(group1_level) |>
+  separate_wider_regex(
+    group1_level,
+    patterns = c(
+      variable_label1 = ".*?\\S+",
+      "\\s+",
+      "(?:\\(N = |N = )",
+      stat = "\\d+",
+      "\\)?"
+    )
+  ) |>
+  mutate(stat_name = "N_header", stat_label = "N", .before = "stat")
+
+rt_ef_dact <- rt_ef_dact |>
+  mutate(
+    group1_level = stringr::str_extract(
+      group1_level,
+      ".*?\\S+(?=\\s*(?:\\(N = |N = ))"
+    )
+  )
+
+rt_ef_dact <- bind_rows(big_n, rt_ef_dact) |>
+  select(starts_with("group"), starts_with("variable"), starts_with("stat"))
+
+# ---- Slide 11 ----------------------------------------------------------------
+# rt-ef-mda
+temp_rtf11 <- withr::local_tempfile(fileext = ".rtf")
+
+system.file("extdata", "examples", "rt-ef-mda.rtf", package = "artful") |>
+  read_file() |>
+  artful:::rtf_indentation() |>
+  artful:::rtf_linebreaks() |>
+  write_file(temp_rtf11)
+
+rt_ef_mda <- artful:::rtf_to_html(temp_rtf11) |>
+  artful:::html_to_dataframe() |>
+  artful:::manage_exceptions() |>
+  artful:::strip_pagination() |>
+  artful:::strip_indentation() |>
+  artful:::pivot_group()
+
+# Parse stats
+rt_ef_mda <- rt_ef_mda |>
+  mutate(stat = if_else(stat == "N.A.", NA, stat)) |>
+  mutate(
+    .id = row_number(),
+    stat_list = str_extract_all(stat, "[\\d.]+")
+  ) |>
+  mutate(
+    n_values = lengths(stat_list)
+  ) |>
+  unnest(stat_list) |>
+  mutate(
+    stat_name = case_when(
+      str_detect(variable_level, "n \\(%\\)$") &
+        n_values > 1 &
+        row_number() == 1 ~
+        "n",
+      str_detect(variable_level, "n \\(%\\)$") &
+        n_values > 1 &
+        row_number() == 2 ~
+        "p",
+      str_detect(variable_label1, "n \\(%\\)$") &
+        n_values > 1 &
+        row_number() == 1 ~
+        "n",
+      str_detect(variable_label1, "n \\(%\\)$") &
+        n_values > 1 &
+        row_number() == 2 ~
+        "p",
+      str_detect(variable_level, "\\(95% CI\\)") &
+        n_values > 1 &
+        row_number() == 1 ~
+        "ci_low",
+      str_detect(variable_level, "\\(95% CI\\)") &
+        n_values > 1 &
+        row_number() == 2 ~
+        "ci_high",
+      variable_level == "TOTAL NUMBER OF SUBJECTS" ~ "n",
+      variable_label1 == "RESPONSE RATE (%)" ~ "p",
+      variable_label1 == "DIFFERENCE VS PLACEBO (%)" ~ "p",
+      variable_level == "P-VALUE" & !is.na(stat) ~ "p_value",
+      variable_level == "NON RESPONDERS DUE TO MISSING DATA n (%)" &
+        variable_label1 == "RESPONSE RATE (%)" ~
+        "p",
+      variable_label1 == "RESPONDERS n (%)" & stat == "0" ~ "n",
+      .default = NA
+    ),
+    stat = stat_list,
+    .by = .id
+  ) |>
+  select(
+    -c(.id, stat_list, n_values)
+  ) |>
+  left_join(stat_lookup) |>
+  filter(!is.na(stat)) |>
+  mutate(
+    stat_name = if_else(
+      is.na(variable_level) & variable_label1 == "ODDS RATIO VS PLACEBO",
+      "odds_ratio",
+      stat_name
+    ),
+    stat_label = if_else(
+      is.na(variable_level) & variable_label1 == "ODDS RATIO VS PLACEBO",
+      "Odds Ratio",
+      stat_label
+    )
+  )
+
+big_n <- rt_ef_mda |>
+  distinct(group1_level) |>
+  separate_wider_regex(
+    group1_level,
+    patterns = c(
+      variable_label1 = ".*?\\S+",
+      "\\s+",
+      "(?:\\(N = |N = )",
+      stat = "\\d+",
+      "\\)?"
+    )
+  ) |>
+  mutate(stat_name = "N_header", stat_label = "N", .before = "stat")
+
+rt_ef_mda <- rt_ef_mda |>
+  mutate(
+    group1_level = stringr::str_extract(
+      group1_level,
+      ".*?\\S+(?=\\s*(?:\\(N = |N = ))"
+    )
+  )
+
+rt_ef_mda <- bind_rows(big_n, rt_ef_mda) |>
+  select(starts_with("group"), starts_with("variable"), starts_with("stat"))
+
+# rt-ef-cfbdas
+temp_rtf12 <- withr::local_tempfile(fileext = ".rtf")
+
+system.file("extdata", "examples", "rt-ef-cfbdas.rtf", package = "artful") |>
+  read_file() |>
+  artful:::rtf_indentation() |>
+  artful:::rtf_linebreaks() |>
+  write_file(temp_rtf12)
+
+rt_ef_cfbdas <- artful:::rtf_to_html(temp_rtf12) |>
+  artful:::html_to_dataframe() |>
+  artful:::manage_exceptions() |>
+  artful:::strip_pagination() |>
+  artful:::strip_indentation() |>
+  artful:::pivot_group()
+
+# Parse stats
+rt_ef_cfbdas <- rt_ef_cfbdas |>
+  mutate(stat = if_else(stat == "N.A.", NA, stat)) |>
+  mutate(
+    .id = row_number(),
+    stat_list = str_extract_all(stat, "[\\d.]+")
+  ) |>
+  mutate(
+    n_values = lengths(stat_list)
+  ) |>
+  unnest(stat_list) |>
+  filter(!is.na(stat)) |>
+  mutate(
+    stat_name = case_when(
+      variable_level == "MEAN (SD)" &
+        n_values == 2 &
+        row_number() == 1 ~
+        "mean",
+      variable_level == "MEAN (SD)" &
+        n_values == 2 &
+        row_number() == 2 ~
+        "sd",
+      variable_level == "MIN, MAX" &
+        n_values == 2 &
+        row_number() == 1 ~
+        "min",
+      variable_level == "MIN, MAX" &
+        n_values == 2 &
+        row_number() == 2 ~
+        "max",
+      variable_level == "ADJUSTED MEAN DIFFERENCE (SE)" &
+        n_values == 2 &
+        row_number() == 1 ~
+        "mean",
+      variable_level == "ADJUSTED MEAN DIFFERENCE (SE)" &
+        n_values == 2 &
+        row_number() == 2 ~
+        "se",
+      variable_label1 == "ADJUSTED MEAN CHANGES(SE)" &
+        n_values == 2 &
+        row_number() == 1 ~
+        "mean",
+      variable_label1 == "ADJUSTED MEAN CHANGES(SE)" &
+        n_values == 2 &
+        row_number() == 2 ~
+        "se",
+      variable_level == "95% CONFIDENCE INTERVAL FOR DIFFERENCE" &
+        n_values == 2 &
+        row_number() == 1 ~
+        "ci_low",
+      variable_level == "95% CONFIDENCE INTERVAL FOR DIFFERENCE" &
+        n_values == 2 &
+        row_number() == 2 ~
+        "ci_high",
+      variable_label1 == "95% CONFIDENCE INTERVAL FOR MEAN" &
+        n_values == 2 &
+        row_number() == 1 ~
+        "ci_low",
+      variable_label1 == "95% CONFIDENCE INTERVAL FOR MEAN" &
+        n_values == 2 &
+        row_number() == 2 ~
+        "ci_high",
+      variable_level == "N1" ~ "n",
+      variable_level == "MEDIAN" ~ "median",
+      variable_level == "P VALUE" ~ "p_value"
+    ),
+    stat = stat_list,
+    .by = .id
+  ) |>
+  select(
+    -c(.id, stat_list, n_values)
+  ) |>
+  left_join(stat_lookup)
+
+big_n <- rt_ef_cfbdas |>
+  distinct(group1_level) |>
+  separate_wider_regex(
+    group1_level,
+    patterns = c(
+      variable_label1 = ".*?\\S+",
+      "\\s+",
+      "(?:\\(N = |N = )",
+      stat = "\\d+",
+      "\\)?"
+    )
+  ) |>
+  mutate(stat_name = "N_header", stat_label = "N", .before = "stat")
+
+rt_ef_cfbdas <- rt_ef_cfbdas |>
+  mutate(
+    group1_level = stringr::str_extract(
+      group1_level,
+      ".*?\\S+(?=\\s*(?:\\(N = |N = ))"
+    )
+  )
+
+rt_ef_cfbdas <- bind_rows(big_n, rt_ef_cfbdas) |>
+  select(starts_with("group"), starts_with("variable"), starts_with("stat"))
+
+# ---- Slide 12 ----------------------------------------------------------------
+# rt-ef-cfbsvdh
+temp_rtf13 <- withr::local_tempfile(fileext = ".rtf")
+
+system.file("extdata", "examples", "rt-ef-cfbsvdh.rtf", package = "artful") |>
+  read_file() |>
+  artful:::rtf_indentation() |>
+  artful:::rtf_linebreaks() |>
+  write_file(temp_rtf13)
+
+rt_ef_cfbsvdh <- artful:::rtf_to_html(temp_rtf13) |>
+  artful:::html_to_dataframe() |>
+  artful:::manage_exceptions() |>
+  artful:::strip_pagination() |>
+  artful:::strip_indentation() |>
+  artful:::pivot_group()
+
+# Parse stats
+rt_ef_cfbsvdh <- rt_ef_cfbsvdh |>
+  mutate(stat = if_else(stat == "N.A.", NA, stat)) |>
+  mutate(
+    .id = row_number(),
+    stat_list = str_extract_all(stat, "[\\d.]+")
+  ) |>
+  mutate(
+    n_values = lengths(stat_list)
+  ) |>
+  unnest(stat_list) |>
+  filter(!is.na(stat)) |>
+  mutate(
+    stat_name = case_when(
+      variable_level == "MEAN (SD)" &
+        n_values == 2 &
+        row_number() == 1 ~
+        "mean",
+      variable_level == "MEAN (SD)" &
+        n_values == 2 &
+        row_number() == 2 ~
+        "sd",
+      variable_level == "MIN, MAX" &
+        n_values == 2 &
+        row_number() == 1 ~
+        "min",
+      variable_level == "MIN, MAX" &
+        n_values == 2 &
+        row_number() == 2 ~
+        "max",
+      variable_level == "ADJUSTED MEAN DIFFERENCE (SE)" &
+        n_values == 2 &
+        row_number() == 1 ~
+        "mean",
+      variable_level == "ADJUSTED MEAN DIFFERENCE (SE)" &
+        n_values == 2 &
+        row_number() == 2 ~
+        "se",
+      variable_label1 == "ADJUSTED MEAN CHANGES(SE)" &
+        n_values == 2 &
+        row_number() == 1 ~
+        "mean",
+      variable_label1 == "ADJUSTED MEAN CHANGES(SE)" &
+        n_values == 2 &
+        row_number() == 2 ~
+        "se",
+      variable_level == "95% CONFIDENCE INTERVAL FOR DIFFERENCE" &
+        n_values == 2 &
+        row_number() == 1 ~
+        "ci_low",
+      variable_level == "95% CONFIDENCE INTERVAL FOR DIFFERENCE" &
+        n_values == 2 &
+        row_number() == 2 ~
+        "ci_high",
+      variable_label1 == "95% CONFIDENCE INTERVAL FOR MEAN" &
+        n_values == 2 &
+        row_number() == 1 ~
+        "ci_low",
+      variable_label1 == "95% CONFIDENCE INTERVAL FOR MEAN" &
+        n_values == 2 &
+        row_number() == 2 ~
+        "ci_high",
+      variable_level == "N1" ~ "n",
+      variable_level == "MEDIAN" ~ "median",
+      variable_level == "P VALUE" ~ "p_value"
+    ),
+    stat = stat_list,
+    .by = .id
+  ) |>
+  select(
+    -c(.id, stat_list, n_values)
+  ) |>
+  left_join(stat_lookup)
+
+big_n <- rt_ef_cfbsvdh |>
+  distinct(group1_level) |>
+  separate_wider_regex(
+    group1_level,
+    patterns = c(
+      variable_label1 = ".*?\\S+",
+      "\\s+",
+      "(?:\\(N = |N = )",
+      stat = "\\d+",
+      "\\)?"
+    )
+  ) |>
+  mutate(stat_name = "N_header", stat_label = "N", .before = "stat")
+
+rt_ef_cfbsvdh <- rt_ef_cfbsvdh |>
+  mutate(
+    group1_level = stringr::str_extract(
+      group1_level,
+      ".*?\\S+(?=\\s*(?:\\(N = |N = ))"
+    )
+  )
+
+rt_ef_cfbsvdh <- bind_rows(big_n, rt_ef_cfbsvdh) |>
   select(starts_with("group"), starts_with("variable"), starts_with("stat"))
