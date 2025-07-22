@@ -3,32 +3,6 @@ library(artful)
 
 # options(tibble.print_max = Inf)
 
-stat_lookup <- tribble(
-  ~stat_name, ~stat_label,
-  "n", "n",
-  "N", "N",
-  "N_obs", "N Observed",
-  "N_miss", "N Missing", 
-  "p", "%" ,
-  "pct", "%" ,
-  "mean", "Mean" ,
-  "sd", "SD",
-  "se", "SE", 
-  "median", "Median" ,
-  "p25", "Q1",
-  "p75", "Q3",
-  "iqr", "IQR" ,	
-  "min", "Min", 
-  "max", "Max",
-  "range", "Range", 	
-  "geom_mean", "Geometric Mean",
-  "cv", "CV (%)",
-  "ci_low", "CI Lower Bound",
-  "ci_high", "CI Upper Bound",
-  "p_value", "p",
-  "estimate", "est"
-)
-
 example_data <- function(...) {
   system.file("extdata", "examples", ..., package = "artful")
 }
@@ -92,7 +66,7 @@ rt_dm_demo <- function(input = example_data("rt-dm-demo.rtf")) {
     ) |>
     mutate(stat_name = if_else(is.na(stat_name), "n", stat_name)) |>
     filter(!is.na(stat)) |>
-    left_join(stat_lookup)
+    left_join(artful:::stat_lookup)
 
   big_n <- ard_ish_parsed |>
     distinct(group1_level) |>
@@ -176,7 +150,7 @@ rt_dm_basedz <- function(input = example_data("rt-dm-basedz.rtf")) {
     ) |>
     mutate(stat_name = if_else(is.na(stat_name), "n", stat_name)) |>
     filter(!is.na(stat)) |>
-    left_join(stat_lookup)
+    left_join(artful:::stat_lookup)
 
   big_n <- ard_ish_parsed |>
     distinct(group1_level) |>
@@ -247,7 +221,7 @@ rt_ds_pretrt <- function(input = example_data("rt-ds-pretrt.rtf")) {
       -c(.id, stat_list, n_values)
     ) |>
     filter(!is.na(stat)) |>
-    left_join(stat_lookup)
+    left_join(artful:::stat_lookup)
 
   big_n <- ard_ish_parsed |>
     distinct(group1_level) |>
@@ -314,7 +288,7 @@ rt_ds_trtwk16 <- function(input = example_data("rt-ds-trtwk16.rtf")) {
     ) |>
     mutate(stat_name = if_else(is.na(stat_name), "n", stat_name)) |>
     filter(!is.na(stat)) |>
-    left_join(stat_lookup)
+    left_join(artful:::stat_lookup)
 
   big_n <- ard_ish_parsed |>
     distinct(group1_level) |>
@@ -400,7 +374,7 @@ rt_ef_acr20 <- function(input = example_data("rt-ef-acr20.rtf")) {
       -c(.id, stat_list, n_values)
     ) |>
     filter(!is.na(stat)) |>
-    left_join(stat_lookup)
+    left_join(artful:::stat_lookup)
 
   big_n <- ard_ish_parsed |>
     distinct(group1_level) |>
@@ -507,7 +481,7 @@ rt_ef_aacr50 <- function(input = example_data("rt-ef-aacr50.rtf")) {
     select(
       -c(.id, stat_list, n_values)
     ) |>
-    left_join(stat_lookup) |>
+    left_join(artful:::stat_lookup) |>
     filter(!is.na(stat))
 
   big_n <- ard_ish_parsed |>
@@ -617,7 +591,7 @@ rt_ef_aacr70 <- function(input = example_data("rt-ef-aacr70.rtf")) {
     select(
       -c(.id, stat_list, n_values)
     ) |>
-    left_join(stat_lookup) |>
+    left_join(artful:::stat_lookup) |>
     filter(!is.na(stat))
 
   big_n <- ard_ish_parsed |>
@@ -717,7 +691,7 @@ rt_ef_pasi <- function(input = example_data("rt-ef-pasi.rtf")) {
     select(
       -c(.id, stat_list, n_values)
     ) |>
-    left_join(stat_lookup) |>
+    left_join(artful:::stat_lookup) |>
     filter(!is.na(stat)) |>
     mutate(
       stat_name = if_else(
@@ -827,7 +801,7 @@ rt_ef_enth <- function(input = example_data("rt-ef-enth.rtf")) {
     select(
       -c(.id, stat_list, n_values)
     ) |>
-    left_join(stat_lookup) |>
+    left_join(artful:::stat_lookup) |>
     filter(!is.na(stat)) |>
     mutate(
       stat_name = if_else(
@@ -937,7 +911,7 @@ rt_ef_dact <- function(input = example_data("rt-ef-dact.rtf")) {
     select(
       -c(.id, stat_list, n_values)
     ) |>
-    left_join(stat_lookup) |>
+    left_join(artful:::stat_lookup) |>
     filter(!is.na(stat)) |>
     mutate(
       stat_name = if_else(
@@ -1049,7 +1023,7 @@ rt_ef_mda <- function(input = example_data("rt-ef-mda.rtf")) {
     select(
       -c(.id, stat_list, n_values)
     ) |>
-    left_join(stat_lookup) |>
+    left_join(artful:::stat_lookup) |>
     filter(!is.na(stat)) |>
     mutate(
       stat_name = if_else(
@@ -1178,7 +1152,7 @@ rt_ef_cfbdas <- function(input = example_data("rt-ef-cfbdas.rtf")) {
     select(
       -c(.id, stat_list, n_values)
     ) |>
-    left_join(stat_lookup)
+    left_join(artful:::stat_lookup)
 
   big_n <- ard_ish_parsed |>
     distinct(group1_level) |>
@@ -1296,7 +1270,7 @@ rt_ef_cfbsvdh <- function(input = example_data("rt-ef-cfbsvdh.rtf")) {
     select(
       -c(.id, stat_list, n_values)
     ) |>
-    left_join(stat_lookup)
+    left_join(artful:::stat_lookup)
 
   big_n <- ard_ish_parsed |>
     distinct(group1_level) |>
@@ -1414,7 +1388,7 @@ rt_ef_cfbhaq <- function(input = example_data("rt-ef-cfbhaq.rtf")) {
     select(
       -c(.id, stat_list, n_values)
     ) |>
-    left_join(stat_lookup)
+    left_join(artful:::stat_lookup)
 
   big_n <- ard_ish_parsed |>
     distinct(group1_level) |>
@@ -1494,7 +1468,7 @@ rt_ae_ae1 <- function(input = example_data("rt-ae-ae1.rtf")) {
     select(
       -c(.id, stat_list, n_values)
     ) |>
-    left_join(stat_lookup)
+    left_join(artful:::stat_lookup)
 
   big_n <- ard_ish_parsed |>
     distinct(group1_level) |>
@@ -1568,7 +1542,7 @@ rt_ae_aesoc1 <- function(input = example_data("rt-ae-aesoc1.rtf")) {
     select(
       -c(.id, stat_list, n_values)
     ) |>
-    left_join(stat_lookup)
+    left_join(artful:::stat_lookup)
 
   big_n <- ard_ish_parsed |>
     distinct(group1_level) |>
@@ -1656,7 +1630,7 @@ rt_ae_saesoc1 <- function(input = example_data("rt-ae-saesoc1.rtf")) {
     select(
       -c(.id, stat_list, n_values)
     ) |>
-    left_join(stat_lookup)
+    left_join(artful:::stat_lookup)
 
   big_n <- ard_ish_parsed |>
     distinct(group1_level) |>
@@ -1748,7 +1722,7 @@ rt_ae_aedissoc1 <- function(input = example_data("rt-ae-aedissoc1.rtf")) {
     select(
       -c(.id, stat_list, n_values)
     ) |>
-    left_join(stat_lookup)
+    left_join(artful:::stat_lookup)
 
   big_n <- ard_ish_parsed |>
     distinct(group1_level) |>
