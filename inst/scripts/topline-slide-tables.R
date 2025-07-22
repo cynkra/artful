@@ -1,6 +1,6 @@
 library(tidyverse)
 library(artful)
-pkgload::load_all()
+
 # options(tibble.print_max = Inf)
 
 stat_lookup <- tribble(
@@ -29,13 +29,17 @@ stat_lookup <- tribble(
   "estimate", "est"
 )
 
+example_data <- function(...) {
+  system.file("extdata", "examples", ..., package = "artful")
+}
+
 # ---- Slide 7 -----------------------------------------------------------------
 
 # ---- rt-dm-demo.rtf ----
-rt_dm_demo <- function() {
+rt_dm_demo <- function(input = example_data("rt-dm-demo.rtf")) {
   temp_rtf <- withr::local_tempfile(fileext = ".rtf")
 
-  system.file("extdata", "examples", "rt-dm-demo.rtf", package = "artful") |>
+  input |>
     read_file() |>
     artful:::rtf_indentation() |>
     artful:::rtf_linebreaks() |>
@@ -117,10 +121,10 @@ rt_dm_demo <- function() {
 }
 
 # ---- rt-dm-basedz.rtf ----
-rt_dm_basedz <- function() {
+rt_dm_basedz <- function(input = example_data("rt-dm-basedz.rtf")) {
   temp_rtf <- withr::local_tempfile(fileext = ".rtf")
 
-  system.file("extdata", "examples", "rt-dm-basedz.rtf", package = "artful") |>
+  input |>
     read_file() |>
     artful:::rtf_indentation() |>
     write_file(temp_rtf)
@@ -206,10 +210,10 @@ rt_dm_basedz <- function() {
 # ---- Slide 8 -----------------------------------------------------------------
 
 # ---- rt-ds-pretrt.rtf ----
-rt_ds_pretrt <- function() {
+rt_ds_pretrt <- function(input = example_data("rt-ds-pretrt.rtf")) {
   temp_rtf <- withr::local_tempfile(fileext = ".rtf")
 
-  system.file("extdata", "examples", "rt-ds-pretrt.rtf", package = "artful") |>
+  input |>
     read_file() |>
     artful:::rtf_indentation() |>
     write_file(temp_rtf)
@@ -272,10 +276,10 @@ rt_ds_pretrt <- function() {
 }
 
 # ---- rt-ds-trtwk16.rtf ----
-rt_ds_trtwk16 <- function() {
+rt_ds_trtwk16 <- function(input = example_data("rt-ds-trtwk16.rtf")) {
   temp_rtf <- withr::local_tempfile(fileext = ".rtf")
 
-  system.file("extdata", "examples", "rt-ds-trtwk16.rtf", package = "artful") |>
+  input |>
     read_file() |>
     artful:::rtf_indentation() |>
     write_file(temp_rtf)
@@ -341,10 +345,10 @@ rt_ds_trtwk16 <- function() {
 # ---- Slide 9 -----------------------------------------------------------------
 
 # ---- rt-ef-acr20.rtf ----
-rt_ef_acr20 <- function() {
+rt_ef_acr20 <- function(input = example_data("rt-ef-acr20.rtf")) {
   temp_rtf <- withr::local_tempfile(fileext = ".rtf")
 
-  system.file("extdata", "examples", "rt-ef-acr20.rtf", package = "artful") |>
+  input |>
     read_file() |>
     artful:::rtf_indentation() |>
     artful:::rtf_linebreaks() |>
@@ -425,10 +429,10 @@ rt_ef_acr20 <- function() {
 }
 
 # ---- rt-ef-aacr50.rtf ----
-rt_ef_aacr50 <- function() {
+rt_ef_aacr50 <- function(input = example_data("rt-ef-aacr50.rtf")) {
   temp_rtf <- withr::local_tempfile(fileext = ".rtf")
 
-  system.file("extdata", "examples", "rt-ef-aacr50.rtf", package = "artful") |>
+  input |>
     read_file() |>
     artful:::rtf_indentation() |>
     artful:::rtf_linebreaks() |>
@@ -533,10 +537,10 @@ rt_ef_aacr50 <- function() {
 }
 
 # ---- rt-ef-aacr70.rtf ----
-rt_ef_aacr70 <- function() {
+rt_ef_aacr70 <- function(input = example_data("rt-ef-aacr70.rtf")) {
   temp_rtf <- withr::local_tempfile(fileext = ".rtf")
 
-  system.file("extdata", "examples", "rt-ef-aacr70.rtf", package = "artful") |>
+  input |>
     read_file() |>
     artful:::rtf_indentation() |>
     artful:::rtf_linebreaks() |>
@@ -645,10 +649,10 @@ rt_ef_aacr70 <- function() {
 # ---- Slide 10 ----------------------------------------------------------------
 
 # ---- rt-ef-pasi ----
-rt_ef_pasi <- function() {
+rt_ef_pasi <- function(input = example_data("rt-ef-pasi.rtf")) {
   temp_rtf <- withr::local_tempfile(fileext = ".rtf")
 
-  system.file("extdata", "examples", "rt-ef-pasi.rtf", package = "artful") |>
+  input |>
     read_file() |>
     artful:::rtf_indentation() |>
     artful:::rtf_linebreaks() |>
@@ -755,10 +759,10 @@ rt_ef_pasi <- function() {
 }
 
 # ---- rt-ef-enth ----
-rt_ef_enth <- function() {
+rt_ef_enth <- function(input = example_data("rt-ef-enth.rtf")) {
   temp_rtf <- withr::local_tempfile(fileext = ".rtf")
 
-  system.file("extdata", "examples", "rt-ef-enth.rtf", package = "artful") |>
+  input |>
     read_file() |>
     artful:::rtf_indentation() |>
     artful:::rtf_linebreaks() |>
@@ -865,10 +869,10 @@ rt_ef_enth <- function() {
 }
 
 # ---- rt-ef-dact ----
-rt_ef_dact <- function() {
+rt_ef_dact <- function(input = example_data("rt-ef-dact.rtf")) {
   temp_rtf <- withr::local_tempfile(fileext = ".rtf")
 
-  system.file("extdata", "examples", "rt-ef-dact.rtf", package = "artful") |>
+  input |>
     read_file() |>
     artful:::rtf_indentation() |>
     artful:::rtf_linebreaks() |>
@@ -977,10 +981,10 @@ rt_ef_dact <- function() {
 # ---- Slide 11 ----------------------------------------------------------------
 
 # ---- rt-ef-mda ----
-rt_ef_mda <- function() {
+rt_ef_mda <- function(input = example_data("rt-ef-mda.rtf")) {
   temp_rtf <- withr::local_tempfile(fileext = ".rtf")
 
-  system.file("extdata", "examples", "rt-ef-mda.rtf", package = "artful") |>
+  input |>
     read_file() |>
     artful:::rtf_indentation() |>
     artful:::rtf_linebreaks() |>
@@ -1087,10 +1091,10 @@ rt_ef_mda <- function() {
 }
 
 # ---- rt-ef-cfbdas ----
-rt_ef_cfbdas <- function() {
+rt_ef_cfbdas <- function(input = example_data("rt-ef-cfbdas.rtf")) {
   temp_rt <- withr::local_tempfile(fileext = ".rtf")
 
-  system.file("extdata", "examples", "rt-ef-cfbdas.rtf", package = "artful") |>
+  input |>
     read_file() |>
     artful:::rtf_indentation() |>
     artful:::rtf_linebreaks() |>
@@ -1205,10 +1209,10 @@ rt_ef_cfbdas <- function() {
 # ---- Slide 12 ----------------------------------------------------------------
 
 # ---- rt-ef-cfbsvdh ----
-rt_ef_cfbsvdh <- function() {
+rt_ef_cfbsvdh <- function(input = example_data("rt-ef-cfbsvdh.rtf")) {
   temp_rtf <- withr::local_tempfile(fileext = ".rtf")
 
-  system.file("extdata", "examples", "rt-ef-cfbsvdh.rtf", package = "artful") |>
+  input |>
     read_file() |>
     artful:::rtf_indentation() |>
     artful:::rtf_linebreaks() |>
@@ -1323,10 +1327,10 @@ rt_ef_cfbsvdh <- function() {
 # ---- Slide 13 ----------------------------------------------------------------
 
 # ---- rt-ef-cfbhaq ----
-rt_ef_cfbhaq <- function() {
+rt_ef_cfbhaq <- function(input = example_data("rt-ef-cfbhaq.rtf")) {
   temp_rtf <- withr::local_tempfile(fileext = ".rtf")
 
-  system.file("extdata", "examples", "rt-ef-cfbhaq.rtf", package = "artful") |>
+  input |>
     read_file() |>
     artful:::rtf_indentation() |>
     artful:::rtf_linebreaks() |>
@@ -1447,10 +1451,10 @@ rt_ef_cfbhaq <- function() {
 # ---- Slide 14 ----------------------------------------------------------------
 
 # ---- rt-ae-ae1 ----
-rt_ae_ae1 <- function() {
+rt_ae_ae1 <- function(input = example_data("rt-ae-ae1.rtf")) {
   temp_rtf <- withr::local_tempfile(fileext = ".rtf")
 
-  system.file("extdata", "examples", "rt-ae-ae1.rtf", package = "artful") |>
+  input |>
     read_file() |>
     artful:::rtf_indentation() |>
     artful:::rtf_linebreaks() |>
@@ -1521,10 +1525,10 @@ rt_ae_ae1 <- function() {
 # ---- Slide 15 ----------------------------------------------------------------
 
 # ---- rt-ae-aesoc1 ----
-rt_ae_aesoc1 <- function() {
+rt_ae_aesoc1 <- function(input = example_data("rt-ae-aesoc1.rtf")) {
   temp_rtf <- withr::local_tempfile(fileext = ".rtf")
 
-  system.file("extdata", "examples", "rt-ae-aesoc1.rtf", package = "artful") |>
+  input |>
     read_file() |>
     artful:::rtf_indentation() |>
     artful:::rtf_linebreaks() |>
@@ -1595,10 +1599,10 @@ rt_ae_aesoc1 <- function() {
 # ---- Slide 16 & 17 -----------------------------------------------------------
 
 # ---- rt-ae-saesoc1 ----
-rt_ae_saesoc1 <- function() {
+rt_ae_saesoc1 <- function(input = example_data("rt-ae-saesoc1.rtf")) {
   temp_rtf <- withr::local_tempfile(fileext = ".rtf")
 
-  system.file("extdata", "examples", "rt-ae-saesoc1.rtf", package = "artful") |>
+  input |>
     read_file() |>
     artful:::rtf_indentation() |>
     artful:::rtf_linebreaks() |>
@@ -1687,15 +1691,10 @@ rt_ae_saesoc1 <- function() {
 # ---- Slide 19 ----------------------------------------------------------------
 
 # ---- rt-ae-aedissoc1 ----
-rt_ae_aedissoc1 <- function() {
+rt_ae_aedissoc1 <- function(input = example_data("rt-ae-aedissoc1.rtf")) {
   temp_rtf <- withr::local_tempfile(fileext = ".rtf")
 
-  system.file(
-    "extdata",
-    "examples",
-    "rt-ae-aedissoc1.rtf",
-    package = "artful"
-  ) |>
+  input |>
     read_file() |>
     artful:::rtf_indentation() |>
     artful:::rtf_linebreaks() |>
@@ -1784,22 +1783,3 @@ rt_ae_aedissoc1 <- function() {
 # ---- Slide 21 ----------------------------------------------------------------
 
 # RTF UNIDENTIFIED IN PRESENTER NOTES
-
-# ---- List of ARDs ------------------------------------------------------------
-rt_dm_demo()
-rt_dm_basedz()
-rt_ds_pretrt()
-rt_ds_trtwk16()
-rt_ef_acr20()
-rt_ef_aacr50()
-rt_ef_aacr70()
-rt_ef_pasi()
-rt_ef_enth()
-rt_ef_dact()
-rt_ef_mda()
-rt_ef_cfbdas()
-rt_ef_cfbsvdh()
-rt_ef_cfbhaq()
-rt_ae_ae1()
-rt_ae_aesoc1()
-rt_ae_aedissoc1()
