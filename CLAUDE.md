@@ -91,10 +91,7 @@ The package converts tables to Analysis Results Data (ARD) format with these key
 - Tables may span multiple pages with repeated headers/footers
 - Indentation patterns: `\li192` (2 spaces), `\li384` (4 spaces), `\li576` (6 spaces)
 
-### Quality Control
-Use `rtf_to_pdf()` to generate PDF versions of RTF files for visual comparison and validation of parsing results.
-
-## System prompts
+## Code style
 - You are an expert programmer who prefers the tidyverse
 - Follow the tidyverse style guide:
   * Spread long function calls across multiple lines.
