@@ -391,3 +391,6 @@ readr::write_csv(
   rt_csr_ae_raegr05,
   "inst/extdata/mckinsey/parsed/rt_csr_ae_raegr05.csv"
 )
+
+# ---- Convert RTF -> PDF ------------------------------------------------------
+walk(files, \(x) rtf_to_pdf(x, pdf_path = "inst/extdata/mckinsey/pdfs/"))
